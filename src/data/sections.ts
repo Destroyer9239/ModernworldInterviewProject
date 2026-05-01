@@ -237,24 +237,24 @@ export const STORY_SECTIONS: StorySection[] = [
     shortTitle: '9/11',
     interviewQuestion: 'Where were you on 9/11? What was the city like before the planes hit -- and how did it impact you and those around you?',
     historicalFact:
-      'On September 11, 2001, 19 hijackers carried out coordinated attacks on the World Trade Center and Pentagon. The FAA grounded all civilian aircraft for the first time in history -- 4,500 flights were ordered to land immediately. The skies were silent for five days.',
+      'On September 11, 2001, 19 hijackers carried out coordinated attacks on the World Trade Center and Pentagon. The FAA grounded all civilian aircraft for the first time in American history -- roughly 4,500 flights were ordered to land immediately. Civilian airspace was closed from September 11 to September 13, approximately two days.',
     context:
       'September 11, 2001 permanently transformed national security, global warfare, and the American soul. For Steve Simpson, it was also deeply personal. He had missed the attack by exactly one month -- and watched the second tower collapse live on television from a hotel room in Los Angeles.',
     findings: [
       'Steve had lived in New York City for years. In August 2001, he moved to San Diego for a computer project -- one month before the attacks.',
       '"By a month\'s difference, I would\'ve been living in New York." His daily office was two blocks from the World Trade Center.',
       '"I remember being in LA and going, Oh my God, watching that second tower come down live on TV."',
-      'One of the hijacked planes was targeting Los Angeles -- where Steve now was.',
-      'For five days, not a single aircraft flew over the United States. The nation was completely frozen.',
-      'When the first plane finally reappeared in the sky days later, it stopped freeway traffic. People pulled over and stared up in fear.',
+      'Two of the four hijacked planes -- American Airlines Flight 11 and United Airlines Flight 175 -- were originally scheduled to fly to Los Angeles, the city where Steve now watched events unfold.',
+      'For approximately two days, not a single civilian aircraft flew over the United States. The FAA lifted the ground stop on September 13, 2001.',
+      'When the first plane finally reappeared in the sky, it stopped freeway traffic. People pulled over and stared up in fear.',
       'Being the son of a military pilot shaped his reaction: the country immediately wanted to "punch back" -- a rush to action Steve reflects on with complexity.',
     ],
     quote: '"I remember living for days with no air traffic and fear -- and then I remember the first plane back in the sky."',
     stats: [
       { value: '1 month', label: 'Before 9/11 Steve left NYC' },
       { value: '2 blocks', label: 'His office from the World Trade Center' },
-      { value: '5 days', label: 'No aircraft in U.S. skies after the attack' },
-      { value: '4,500', label: 'Flights grounded on 9/11' },
+      { value: '~2 days', label: 'FAA civilian air travel shut down (Sept 11–13)' },
+      { value: '~4,500', label: 'Flights grounded on 9/11' },
     ],
     accentColor: '#e67e22',
     jetState: {
