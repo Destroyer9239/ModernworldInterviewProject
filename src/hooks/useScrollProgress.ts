@@ -1,36 +1,39 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
+import { useScroll, useMotionValueEvent } from "framer-motion";
 
-export function useScrollProgress(totalSections: number) {
+/**
+ * useScrollProgress
+ * 
+ * Tracks global scroll progress and determines the active section.
+ * 
+ * @param sectionCount Number of scrolly sections in the story
+ * @returns { activeSection: number, scrollProgress: number }
+ */
+export function useScrollProgress(sectionCount: number) {
   const [activeSection, setActiveSection] = useState(0);
   const [scrollProgress, setScrollProgress] = useState(0);
-  const ticking = useRef(false);
+  
+  const { scrollYProgress } = useScroll();
 
-  useEffect(() => {
-    const handleScroll = () => {
-      if (ticking.current) return;
-      ticking.current = true;
-      requestAnimationFrame(() => {
-        const scrollY = window.scrollY;
-        const maxScroll = document.body.scrollHeight - window.innerHeight;
-        const progress = maxScroll > 0 ? scrollY / maxScroll : 0;
-        setScrollProgress(progress);
-
-        // Determine active section from scroll position
-        const sectionHeight = maxScroll / totalSections;
-        const section = Math.min(
-          Math.floor(scrollY / sectionHeight),
-          totalSections - 1
-        );
-        setActiveSection(section);
-        ticking.current = false;
-      });
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [totalSections]);
+  useMotionValueEvent(scrollYProgress, "change", (latest) => {
+    setScrollProgress(latest);
+    
+    // Simple heuristic: active section is determined by scroll progress
+    // We add a small buffer or use a more precise method if needed.
+    // However, since sections are long, this is a good global indicator.
+    // sectionIndex = floor(progress * sectionCount)
+    // We cap it at sectionCount - 1
+    const index = Math.min(
+      Math.floor(latest * sectionCount),
+      sectionCount - 1
+    );
+    
+    // Note: page.tsx also uses useInView in ScrollySection to update activeSectionIndex.
+    // This hook provides a continuous value for the progress bars.
+    setActiveSection(index);
+  });
 
   return { activeSection, scrollProgress };
 }

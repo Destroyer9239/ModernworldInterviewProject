@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useMotionValue, useSpring } from "framer-motion";
 
 export default function AudioPlayer() {
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -11,6 +11,24 @@ export default function AudioPlayer() {
   const [volume, setVolume] = useState(0.7);
   const [hasAudio, setHasAudio] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
+
+  // Magnetic button setup
+  const btnX = useMotionValue(0);
+  const btnY = useMotionValue(0);
+  const springBtnX = useSpring(btnX, { stiffness: 150, damping: 15, mass: 0.1 });
+  const springBtnY = useSpring(btnY, { stiffness: 150, damping: 15, mass: 0.1 });
+
+  const handleBtnMouseMove = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left - rect.width / 2;
+    const y = e.clientY - rect.top - rect.height / 2;
+    btnX.set(x * 0.3);
+    btnY.set(y * 0.3);
+  };
+  const handleBtnMouseLeave = () => {
+    btnX.set(0);
+    btnY.set(0);
+  };
 
   useEffect(() => {
     fetch("/audio/interview.mp3", { method: "HEAD" })
@@ -27,25 +45,32 @@ export default function AudioPlayer() {
     };
     const onLoaded = () => setDuration(audio.duration);
     const onEnded = () => setIsPlaying(false);
+    const onPlay = () => setIsPlaying(true);
+    const onPause = () => setIsPlaying(false);
+    
     audio.addEventListener("timeupdate", onTimeUpdate);
     audio.addEventListener("loadedmetadata", onLoaded);
     audio.addEventListener("ended", onEnded);
+    audio.addEventListener("play", onPlay);
+    audio.addEventListener("pause", onPause);
+    
     return () => {
       audio.removeEventListener("timeupdate", onTimeUpdate);
       audio.removeEventListener("loadedmetadata", onLoaded);
       audio.removeEventListener("ended", onEnded);
+      audio.removeEventListener("play", onPlay);
+      audio.removeEventListener("pause", onPause);
     };
-  }, [volume]);
+  }, [volume, hasAudio]);
 
   const togglePlay = () => {
     const audio = audioRef.current;
     if (!audio) return;
-    if (isPlaying) {
+    if (!audio.paused) {
       audio.pause();
     } else {
-      audio.play().catch(() => {});
+      audio.play().catch(console.error);
     }
-    setIsPlaying(!isPlaying);
   };
 
   const seek = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -114,7 +139,7 @@ export default function AudioPlayer() {
 
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-mono text-neutral-500">
-                    {formatTime((audioRef.current?.currentTime) ?? 0)}
+                    {formatTime(progress * duration)}
                   </span>
                   <button
                     onClick={hasAudio ? togglePlay : undefined}
@@ -161,10 +186,14 @@ export default function AudioPlayer() {
         {/* Toggle button */}
         <motion.button
           onClick={() => setIsExpanded(!isExpanded)}
+          onMouseMove={handleBtnMouseMove}
+          onMouseLeave={handleBtnMouseLeave}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           className="flex items-center gap-2 px-4 py-2.5 rounded-full"
           style={{
+            x: springBtnX,
+            y: springBtnY,
             background: "rgba(8, 10, 20, 0.88)",
             backdropFilter: "blur(24px)",
             WebkitBackdropFilter: "blur(24px)",
@@ -187,15 +216,23 @@ export default function AudioPlayer() {
             {hasAudio ? "INTERVIEW" : "AUDIO"}
           </span>
           {isPlaying && (
-            <span className="flex gap-0.5 items-end h-3">
-              {[0, 1, 2].map((i) => (
-                <motion.span
-                  key={i}
-                  className="w-0.5 rounded-full bg-blue-400"
-                  animate={{ height: ["4px", "10px", "4px"] }}
-                  transition={{ duration: 0.7, repeat: Infinity, delay: i * 0.15 }}
-                />
-              ))}
+            <span className="flex gap-[3px] items-end h-4 ml-1">
+              {[0, 1, 2, 3, 4].map((i) => {
+                const heights = [12, 15, 8, 14, 10];
+                const durations = [0.6, 0.75, 0.5, 0.8, 0.65];
+                return (
+                  <motion.span
+                    key={i}
+                    className="w-[2px] rounded-full bg-blue-400"
+                    animate={{ height: ["4px", `${heights[i]}px`, "4px"] }}
+                    transition={{
+                      duration: durations[i],
+                      repeat: Infinity,
+                      delay: i * 0.1,
+                    }}
+                  />
+                );
+              })}
             </span>
           )}
         </motion.button>

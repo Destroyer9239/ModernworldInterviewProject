@@ -4,9 +4,10 @@ import { useState, useCallback, useEffect } from "react";
 import dynamic from "next/dynamic";
 import { STORY_SECTIONS } from "@/data/sections";
 import HeroSection from "@/components/HeroSection";
-import ScrollySection from "@/components/ScrollySection";
+import ParallaxSection from "@/components/ParallaxSection";
 import EpilogueSection from "@/components/EpilogueSection";
 import Header from "@/components/Header";
+import TimelineBar from "@/components/TimelineBar";
 import AudioPlayer from "@/components/AudioPlayer";
 import { useScrollProgress } from "@/hooks/useScrollProgress";
 
@@ -17,9 +18,11 @@ export default function Home() {
   const [hasModel, setHasModel] = useState(false);
   const { activeSection, scrollProgress } = useScrollProgress(STORY_SECTIONS.length);
 
-  useEffect(() => {
+  const [prevActiveSection, setPrevActiveSection] = useState(activeSection);
+  if (activeSection !== prevActiveSection) {
+    setPrevActiveSection(activeSection);
     setActiveSectionIndex(activeSection);
-  }, [activeSection]);
+  }
 
   useEffect(() => {
     fetch("/models/jet.glb", { method: "HEAD" })
@@ -41,6 +44,9 @@ export default function Home() {
       {/* ── Audio player (bottom-right) ── */}
       <AudioPlayer />
 
+      {/* ── Timeline sidebar (right) ── */}
+      <TimelineBar activeSection={activeSectionIndex} scrollProgress={scrollProgress} />
+
       {/* ── Ambient 3D canvas — fixed background layer ── */}
       <div
         className="fixed inset-0 pointer-events-none"
@@ -58,13 +64,14 @@ export default function Home() {
         {/* Hero */}
         <HeroSection />
 
-        {/* Story sections */}
+        {/* Story sections with parallax backgrounds */}
         {STORY_SECTIONS.map((section, i) => (
-          <ScrollySection
+          <ParallaxSection
             key={section.id}
             section={section}
             isActive={activeSectionIndex === i}
-            onBecomeActive={() => handleSectionActive(i)}
+            onBecomeActive={handleSectionActive}
+            index={i}
           />
         ))}
 
@@ -74,3 +81,4 @@ export default function Home() {
     </main>
   );
 }
+

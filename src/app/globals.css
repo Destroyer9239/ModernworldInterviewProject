@@ -30,6 +30,9 @@ body {
   overflow-x: hidden;
 }
 
+/* ══════════════════════════════════════
+   CUSTOM SCROLLBAR
+   ══════════════════════════════════════ */
 ::-webkit-scrollbar {
   width: 4px;
 }
@@ -49,6 +52,54 @@ body {
   color: #fff;
 }
 
+/* ══════════════════════════════════════
+   FLOATING PARTICLE ANIMATION
+   ══════════════════════════════════════ */
+@keyframes float-particle {
+  0% {
+    transform: translateY(0) translateX(0) scale(1);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(-40vh) translateX(20px) scale(1.5);
+    opacity: 0.6;
+  }
+  90% {
+    opacity: 0.2;
+  }
+  100% {
+    transform: translateY(-80vh) translateX(-10px) scale(0.5);
+    opacity: 0;
+  }
+}
+
+.animate-float-particle {
+  animation: float-particle linear infinite;
+}
+
+/* ══════════════════════════════════════
+   3D SECTION PERSPECTIVE EFFECTS
+   ══════════════════════════════════════ */
+
+/* Ensure 3D transforms are hardware-accelerated */
+section {
+  transform-style: flat;
+  -webkit-transform-style: flat;
+}
+
+/* GPU acceleration for parallax layers */
+.parallax-3d-layer {
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* ══════════════════════════════════════
+   FORM CONTROLS
+   ══════════════════════════════════════ */
 input[type="range"] {
   -webkit-appearance: none;
   appearance: none;

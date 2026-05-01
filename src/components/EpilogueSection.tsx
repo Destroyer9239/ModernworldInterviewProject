@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { motion, useInView } from "framer-motion";
+import { motion, useScroll, useTransform, useInView } from "framer-motion";
 
 const REFLECTION_POINTS = [
   "Growing up in the modern day isn't just about reading books -- it's learning through people who experienced sacrifice and had to adapt in times of war.",
@@ -24,34 +24,8 @@ const TIMELINE = [
   { year: "Present", event: "Man-to-man talk finally bridges the gap" },
 ];
 
-const ASSET_REQUESTS = [
-  {
-    label: "Audio Interview",
-    detail: "Place the Ronan interview MP3 at /public/audio/interview.mp3 to enable in-scroll playback.",
-    color: "#4a90d9",
-    icon: "AUDIO",
-  },
-  {
-    label: "3D Jet Model",
-    detail: "Place an F-14 Tomcat or F-4 Phantom .glb at /public/models/jet.glb (search Sketchfab). Auto-detected -- no code changes needed.",
-    color: "#8e44ad",
-    icon: "3D",
-  },
-  {
-    label: "Vietnam Background Video",
-    detail: 'Highfield AI: "Cinematic aerial footage over dense jungle canopy, 1960s Vietnam, golden hour, 16mm film grain, muted greens and ochres, slow parallax movement"',
-    color: "#c0392b",
-    icon: "VID",
-  },
-  {
-    label: "Navy Brat Polaroid",
-    detail: 'Nano Banana: "Worn 1970s Polaroid photograph of a young boy on a naval air station tarmac, fighter jet blurred in background, sun-faded colors, slight border vignette, nostalgic film aesthetic"',
-    color: "#e67e22",
-    icon: "IMG",
-  },
-];
-
 export default function EpilogueSection() {
+  const sectionRef = useRef<HTMLDivElement>(null);
   const ref = useRef<HTMLDivElement>(null);
   const tlRef = useRef<HTMLDivElement>(null);
   const reflRef = useRef<HTMLDivElement>(null);
@@ -59,9 +33,33 @@ export default function EpilogueSection() {
   const tlInView = useInView(tlRef, { amount: 0.1 });
   const reflInView = useInView(reflRef, { amount: 0.1 });
 
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"],
+  });
+
+  const bgY = useTransform(scrollYProgress, [0, 1], ["0%", "15%"]);
+
   return (
-    <section className="relative px-6 py-24 overflow-hidden">
-      {/* Background glow */}
+    <section ref={sectionRef} className="relative px-6 py-24 overflow-hidden">
+      {/* Parallax gradient background */}
+      <motion.div
+        className="absolute inset-0 pointer-events-none"
+        style={{ y: bgY, willChange: "transform" }}
+      >
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(135deg, #1a1505 0%, #2e2510 20%, #1a1208 50%, #0d0a05 80%, #020408 100%)",
+            top: "-15%",
+            bottom: "-15%",
+            height: "130%",
+          }}
+        />
+      </motion.div>
+
+      {/* Vignette overlay */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
@@ -71,7 +69,6 @@ export default function EpilogueSection() {
       />
 
       <div className="relative z-10 max-w-4xl mx-auto space-y-20">
-
         {/* ── Closing statement ── */}
         <div ref={ref} className="text-center space-y-4">
           <motion.p
@@ -181,47 +178,6 @@ export default function EpilogueSection() {
                 </motion.div>
               ))}
             </div>
-          </div>
-        </div>
-
-        {/* ── Asset requests ── */}
-        <div className="space-y-4">
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={reflInView ? { opacity: 1 } : {}}
-            transition={{ duration: 0.6, delay: 0.6 }}
-            className="text-xs font-mono text-neutral-600 tracking-widest uppercase"
-          >
-            Assets Needed to Complete This Project
-          </motion.p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {ASSET_REQUESTS.map((asset, i) => (
-              <motion.div
-                key={asset.label}
-                initial={{ opacity: 0, y: 16 }}
-                animate={reflInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.5, delay: 0.7 + i * 0.08 }}
-                className="rounded-xl p-4 space-y-2"
-                style={{
-                  background: "rgba(6, 8, 18, 0.72)",
-                  backdropFilter: "blur(16px)",
-                  border: `1px solid ${asset.color}33`,
-                }}
-              >
-                <div className="flex items-center gap-2">
-                  <span
-                    className="text-xs font-mono font-bold px-2 py-0.5 rounded"
-                    style={{ color: asset.color, background: `${asset.color}18`, border: `1px solid ${asset.color}33` }}
-                  >
-                    {asset.icon}
-                  </span>
-                  <span className="text-sm font-semibold" style={{ color: asset.color }}>
-                    {asset.label}
-                  </span>
-                </div>
-                <p className="text-xs text-neutral-500 leading-relaxed">{asset.detail}</p>
-              </motion.div>
-            ))}
           </div>
         </div>
 

@@ -1,8 +1,9 @@
 "use client";
 
-import { useRef, useEffect, Suspense } from "react";
+import { useRef, useEffect, Suspense, useMemo } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { useGLTF, OrbitControls, Stars, Environment } from "@react-three/drei";
+import { useGLTF, Stars, Environment } from "@react-three/drei";
+import { EffectComposer, Bloom, Noise, Vignette } from "@react-three/postprocessing";
 import * as THREE from "three";
 import gsap from "gsap";
 
@@ -22,10 +23,17 @@ interface JetModelProps {
   accentColor: string;
 }
 
+const JET_DARK_COLOR = new THREE.Color("#0a0a1a");
+const JET_COCKPIT_COLOR = new THREE.Color("#a8d4f5");
+const JET_ENGINE_GLOW = new THREE.Color("#ff3300");
+const JET_ENGINE_LIGHT = new THREE.Color("#ff4400");
+
 // Procedural jet geometry — used as placeholder until a .glb is provided
 function ProceduralJet({ animState, accentColor }: JetModelProps) {
   const groupRef = useRef<THREE.Group>(null);
   const currentState = useRef<JetAnimState>({ ...animState });
+  
+  const mainColor = useMemo(() => new THREE.Color(accentColor), [accentColor]);
 
   useEffect(() => {
     if (!groupRef.current) return;
@@ -54,80 +62,65 @@ function ProceduralJet({ animState, accentColor }: JetModelProps) {
     });
   }, [animState]);
 
-  // Subtle idle float animation
   useFrame((state) => {
-    if (!groupRef.current) return;
+    const group = groupRef.current;
+    if (!group) return;
     const t = state.clock.getElapsedTime();
-    groupRef.current.position.y =
+    group.position.y =
       currentState.current.positionY + Math.sin(t * 0.6) * 0.08;
-    groupRef.current.rotation.z =
+    group.rotation.z =
       currentState.current.rotationZ + Math.sin(t * 0.4) * 0.01;
   });
 
-  const mainColor = new THREE.Color(accentColor);
-  const darkColor = new THREE.Color("#0a0a1a");
-
   return (
     <group ref={groupRef}>
-      {/* Fuselage */}
       <mesh position={[0, 0, 0]}>
         <cylinderGeometry args={[0.18, 0.08, 3.2, 16]} />
-        <meshStandardMaterial color={darkColor} metalness={0.9} roughness={0.15} />
+        <meshStandardMaterial color={JET_DARK_COLOR} metalness={0.9} roughness={0.15} />
       </mesh>
-      {/* Nose cone */}
       <mesh position={[0, 0, 1.8]}>
         <coneGeometry args={[0.18, 0.7, 16]} />
         <meshStandardMaterial color={mainColor} metalness={0.85} roughness={0.1} />
       </mesh>
-      {/* Cockpit glass */}
       <mesh position={[0, 0.18, 0.6]}>
         <sphereGeometry args={[0.16, 12, 8, 0, Math.PI * 2, 0, Math.PI * 0.5]} />
         <meshStandardMaterial
-          color="#a8d4f5"
+          color={JET_COCKPIT_COLOR}
           metalness={0.1}
           roughness={0}
           transparent
           opacity={0.55}
         />
       </mesh>
-      {/* Main swept wings */}
       <mesh position={[0, -0.05, 0]} rotation={[0, 0, 0]}>
         <boxGeometry args={[3.2, 0.06, 0.9]} />
-        <meshStandardMaterial color={darkColor} metalness={0.9} roughness={0.2} />
+        <meshStandardMaterial color={JET_DARK_COLOR} metalness={0.9} roughness={0.2} />
       </mesh>
-      {/* Wing sweep detail left */}
       <mesh position={[-1.0, -0.05, -0.3]} rotation={[0, 0.25, 0]}>
         <boxGeometry args={[1.2, 0.05, 0.5]} />
         <meshStandardMaterial color={mainColor} metalness={0.8} roughness={0.2} />
       </mesh>
-      {/* Wing sweep detail right */}
       <mesh position={[1.0, -0.05, -0.3]} rotation={[0, -0.25, 0]}>
         <boxGeometry args={[1.2, 0.05, 0.5]} />
         <meshStandardMaterial color={mainColor} metalness={0.8} roughness={0.2} />
       </mesh>
-      {/* Tail vertical stabilizer */}
       <mesh position={[0, 0.35, -1.3]}>
         <boxGeometry args={[0.07, 0.7, 0.5]} />
         <meshStandardMaterial color={mainColor} metalness={0.85} roughness={0.15} />
       </mesh>
-      {/* Tail horizontal stabilizers */}
       <mesh position={[0, 0, -1.4]}>
         <boxGeometry args={[1.4, 0.05, 0.45]} />
-        <meshStandardMaterial color={darkColor} metalness={0.9} roughness={0.2} />
+        <meshStandardMaterial color={JET_DARK_COLOR} metalness={0.9} roughness={0.2} />
       </mesh>
-      {/* Engine nozzle */}
       <mesh position={[0, 0, -1.65]}>
         <cylinderGeometry args={[0.14, 0.18, 0.4, 12]} />
-        <meshStandardMaterial color="#ff6b2b" metalness={0.5} roughness={0.3} emissive="#ff3300" emissiveIntensity={0.3} />
+        <meshStandardMaterial color="#ff6b2b" metalness={0.5} roughness={0.3} emissive={JET_ENGINE_GLOW} emissiveIntensity={0.3} />
       </mesh>
-      {/* Engine glow */}
-      <pointLight position={[0, 0, -1.9]} color="#ff4400" intensity={1.5} distance={3} />
-      {/* Accent stripe left wing */}
+      <pointLight position={[0, 0, -1.9]} color={JET_ENGINE_LIGHT} intensity={1.5} distance={3} />
       <mesh position={[-0.8, -0.02, 0.1]}>
         <boxGeometry args={[0.6, 0.07, 0.08]} />
         <meshStandardMaterial color={mainColor} metalness={0.7} roughness={0.1} emissive={mainColor} emissiveIntensity={0.2} />
       </mesh>
-      {/* Accent stripe right wing */}
       <mesh position={[0.8, -0.02, 0.1]}>
         <boxGeometry args={[0.6, 0.07, 0.08]} />
         <meshStandardMaterial color={mainColor} metalness={0.7} roughness={0.1} emissive={mainColor} emissiveIntensity={0.2} />
@@ -136,8 +129,7 @@ function ProceduralJet({ animState, accentColor }: JetModelProps) {
   );
 }
 
-// GLTF jet — used when a model file is present at /models/jet.glb
-function GLTFJet({ animState, accentColor }: JetModelProps) {
+function GLTFJet({ animState }: JetModelProps) {
   const { scene } = useGLTF("/models/jet.glb");
   const groupRef = useRef<THREE.Group>(null);
   const currentState = useRef<JetAnimState>({ ...animState });
@@ -181,9 +173,10 @@ function GLTFJet({ animState, accentColor }: JetModelProps) {
   }, [animState]);
 
   useFrame((state) => {
-    if (!groupRef.current) return;
+    const group = groupRef.current;
+    if (!group) return;
     const t = state.clock.getElapsedTime();
-    groupRef.current.position.y =
+    group.position.y =
       currentState.current.positionY + Math.sin(t * 0.6) * 0.08;
   });
 
@@ -224,6 +217,27 @@ function CameraRig({ cameraZ, fov }: { cameraZ: number; fov: number }) {
   return null;
 }
 
+function MouseParallax() {
+  const mouse = useRef({ x: 0, y: 0 });
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      mouse.current.x = (e.clientX / window.innerWidth) * 2 - 1;
+      mouse.current.y = -(e.clientY / window.innerHeight) * 2 + 1;
+    };
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, []);
+
+  useFrame((state) => {
+    const cam = state.camera;
+    cam.position.x = THREE.MathUtils.lerp(cam.position.x, mouse.current.x * 0.5, 0.05);
+    cam.position.y = THREE.MathUtils.lerp(cam.position.y, mouse.current.y * 0.5, 0.05);
+    cam.lookAt(0, 0, 0);
+  });
+  return null;
+}
+
 interface JetSceneProps {
   animState: JetAnimState;
   accentColor: string;
@@ -238,6 +252,7 @@ export default function JetScene({ animState, accentColor, hasModel }: JetSceneP
       style={{ background: "transparent" }}
     >
       <CameraRig cameraZ={animState.cameraZ} fov={animState.cameraFov} />
+      <MouseParallax />
 
       <ambientLight intensity={0.3} />
       <directionalLight position={[5, 8, 5]} intensity={1.2} color="#ffffff" castShadow />
@@ -253,6 +268,11 @@ export default function JetScene({ animState, accentColor, hasModel }: JetSceneP
           <ProceduralJet animState={animState} accentColor={accentColor} />
         )}
         <Environment preset="night" />
+        <EffectComposer>
+          <Bloom luminanceThreshold={0.1} mipmapBlur intensity={1.8} />
+          <Noise opacity={0.03} />
+          <Vignette eskil={false} offset={0.05} darkness={1.2} />
+        </EffectComposer>
       </Suspense>
     </Canvas>
   );

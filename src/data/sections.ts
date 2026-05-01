@@ -17,6 +17,8 @@ export interface StorySection {
   quote?: string;
   stats: StatItem[];
   accentColor: string;
+  backgroundImage: string | null;
+  gradientFallback: string;
   jetState: {
     rotationX: number;
     rotationY: number;
@@ -58,6 +60,8 @@ export const STORY_SECTIONS: StorySection[] = [
       { value: '~6', label: 'Age at parents\' divorce' },
     ],
     accentColor: '#4a90d9',
+    backgroundImage: '/images/cold-war.png',
+    gradientFallback: 'linear-gradient(135deg, #0a1628 0%, #1a2a4a 40%, #0d1b2e 100%)',
     jetState: {
       rotationX: 0,
       rotationY: 0.3,
@@ -98,6 +102,8 @@ export const STORY_SECTIONS: StorySection[] = [
       { value: '58,000', label: 'American lives lost in Vietnam' },
     ],
     accentColor: '#c0392b',
+    backgroundImage: '/images/vietnam.png',
+    gradientFallback: 'linear-gradient(135deg, #1a2e0a 0%, #3d2b0a 40%, #1a0d0a 100%)',
     jetState: {
       rotationX: 0.1,
       rotationY: -0.5,
@@ -137,6 +143,8 @@ export const STORY_SECTIONS: StorySection[] = [
       { value: '1980s', label: 'Reagan rebuilds American confidence' },
     ],
     accentColor: '#8e44ad',
+    backgroundImage: '/images/late-cold-war.png',
+    gradientFallback: 'linear-gradient(135deg, #1a0d2e 0%, #2d1b4e 40%, #0d0a1a 100%)',
     jetState: {
       rotationX: -0.1,
       rotationY: 0.8,
@@ -177,6 +185,8 @@ export const STORY_SECTIONS: StorySection[] = [
       { value: 'SNL', label: 'How he measured presidential weakness' },
     ],
     accentColor: '#16a085',
+    backgroundImage: '/images/presidents.png',
+    gradientFallback: 'linear-gradient(135deg, #0a1a1a 0%, #1a2e2a 40%, #0d1a1a 100%)',
     jetState: {
       rotationX: 0.08,
       rotationY: 0.6,
@@ -217,6 +227,8 @@ export const STORY_SECTIONS: StorySection[] = [
       { value: 'Bankrupt', label: 'What the Cold War did to the Soviet economy' },
     ],
     accentColor: '#27ae60',
+    backgroundImage: '/images/post-cold-war.png',
+    gradientFallback: 'linear-gradient(135deg, #0d1a12 0%, #1a2e20 40%, #0a140d 100%)',
     jetState: {
       rotationX: 0.05,
       rotationY: 1.2,
@@ -257,6 +269,8 @@ export const STORY_SECTIONS: StorySection[] = [
       { value: '4,500', label: 'Flights grounded on 9/11' },
     ],
     accentColor: '#e67e22',
+    backgroundImage: null,
+    gradientFallback: 'linear-gradient(135deg, #1a1005 0%, #2e1f0a 30%, #0d0805 70%, #1a1208 100%)',
     jetState: {
       rotationX: -0.2,
       rotationY: -1.0,
@@ -297,6 +311,8 @@ export const STORY_SECTIONS: StorySection[] = [
       { value: 'Now', label: 'The rift finally healed' },
     ],
     accentColor: '#f1c40f',
+    backgroundImage: null,
+    gradientFallback: 'linear-gradient(135deg, #1a1505 0%, #2e2510 30%, #1a1208 70%, #0d0a05 100%)',
     jetState: {
       rotationX: 0,
       rotationY: 0,
