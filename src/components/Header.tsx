@@ -20,8 +20,7 @@ export default function Header({ activeSection, scrollProgress }: HeaderProps) {
   }, []);
 
   const scrollTo = (id: string) => {
-    const el = document.getElementById(id);
-    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+    document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
     setMenuOpen(false);
   };
 
@@ -40,25 +39,22 @@ export default function Header({ activeSection, scrollProgress }: HeaderProps) {
         transition={{ duration: 0.8, delay: 0.5 }}
         className="fixed top-0 left-0 right-0 z-50"
         style={{
-          background: scrolled
-            ? "rgba(2, 4, 8, 0.92)"
-            : "rgba(2, 4, 8, 0.55)",
+          background: scrolled ? "rgba(4, 6, 14, 0.96)" : "rgba(4, 6, 14, 0.7)",
           backdropFilter: "blur(20px)",
           WebkitBackdropFilter: "blur(20px)",
           borderBottom: scrolled
-            ? "1px solid rgba(255,255,255,0.07)"
-            : "1px solid transparent",
+            ? "1px solid rgba(255,255,255,0.10)"
+            : "1px solid rgba(255,255,255,0.04)",
           transition: "background 0.4s ease, border-color 0.4s ease",
         }}
       >
-        {/* Main header row */}
         <div className="flex items-center justify-between px-5 md:px-8 h-14">
-          {/* Logo / title */}
+          {/* Logo */}
           <button
             onClick={scrollToHero}
             className="flex flex-col items-start leading-none gap-0.5 group"
           >
-            <span className="text-[10px] font-mono text-neutral-500 tracking-[0.25em] uppercase transition-colors group-hover:text-neutral-400">
+            <span className="text-[10px] font-mono text-neutral-500 tracking-[0.25em] uppercase transition-colors group-hover:text-neutral-300">
               Memories of the Modern World
             </span>
             <span
@@ -69,7 +65,7 @@ export default function Header({ activeSection, scrollProgress }: HeaderProps) {
             </span>
           </button>
 
-          {/* Desktop nav links */}
+          {/* Desktop nav */}
           <nav className="hidden lg:flex items-center gap-1">
             {STORY_SECTIONS.map((s, i) => (
               <button
@@ -77,8 +73,8 @@ export default function Header({ activeSection, scrollProgress }: HeaderProps) {
                 onClick={() => scrollTo(s.id)}
                 className="relative px-3 py-1.5 rounded-lg text-xs font-mono transition-all duration-200"
                 style={{
-                  color: activeSection === i ? s.accentColor : "rgba(255,255,255,0.4)",
-                  background: activeSection === i ? `${s.accentColor}15` : "transparent",
+                  color: activeSection === i ? s.accentColor : "rgba(255,255,255,0.5)",
+                  background: activeSection === i ? `${s.accentColor}18` : "transparent",
                 }}
               >
                 {s.shortTitle}
@@ -86,19 +82,18 @@ export default function Header({ activeSection, scrollProgress }: HeaderProps) {
                   <motion.div
                     layoutId="activeTab"
                     className="absolute inset-0 rounded-lg"
-                    style={{ border: `1px solid ${s.accentColor}44` }}
+                    style={{ border: `1px solid ${s.accentColor}55` }}
                   />
                 )}
               </button>
             ))}
           </nav>
 
-          {/* Right: progress + hamburger */}
+          {/* Right: progress + menu */}
           <div className="flex items-center gap-4">
-            <span className="hidden md:block text-xs font-mono text-neutral-600">
+            <span className="hidden md:block text-xs font-mono text-neutral-400 tabular-nums">
               {Math.round(scrollProgress * 100)}%
             </span>
-            {/* Mobile hamburger */}
             <button
               onClick={() => setMenuOpen(!menuOpen)}
               className="lg:hidden flex flex-col gap-1.5 p-1"
@@ -107,7 +102,7 @@ export default function Header({ activeSection, scrollProgress }: HeaderProps) {
               {[0, 1, 2].map((i) => (
                 <motion.span
                   key={i}
-                  className="block h-0.5 rounded-full bg-white/60"
+                  className="block h-0.5 rounded-full bg-white/70"
                   animate={{
                     width: menuOpen && i === 1 ? "0px" : "20px",
                     rotate: menuOpen && i === 0 ? 45 : menuOpen && i === 2 ? -45 : 0,
@@ -121,13 +116,13 @@ export default function Header({ activeSection, scrollProgress }: HeaderProps) {
         </div>
 
         {/* Progress bar */}
-        <div className="h-px w-full" style={{ background: "rgba(255,255,255,0.05)" }}>
+        <div className="h-px w-full" style={{ background: "rgba(255,255,255,0.06)" }}>
           <motion.div
             className="h-full"
             style={{
               width: `${scrollProgress * 100}%`,
               background: current
-                ? `linear-gradient(90deg, ${current.accentColor}, ${current.accentColor}88)`
+                ? `linear-gradient(90deg, ${current.accentColor}, ${current.accentColor}99)`
                 : "linear-gradient(90deg, #4a90d9, #8e44ad)",
               transition: "background 0.6s ease",
             }}
@@ -135,7 +130,7 @@ export default function Header({ activeSection, scrollProgress }: HeaderProps) {
         </div>
       </motion.header>
 
-      {/* Mobile slide-down menu */}
+      {/* Mobile menu */}
       <AnimatePresence>
         {menuOpen && (
           <motion.div
@@ -145,16 +140,14 @@ export default function Header({ activeSection, scrollProgress }: HeaderProps) {
             transition={{ duration: 0.22 }}
             className="fixed top-14 left-0 right-0 z-40 lg:hidden"
             style={{
-              background: "rgba(4, 6, 14, 0.97)",
+              background: "rgba(4, 6, 16, 0.98)",
               backdropFilter: "blur(24px)",
-              borderBottom: "1px solid rgba(255,255,255,0.07)",
+              borderBottom: "1px solid rgba(255,255,255,0.10)",
             }}
           >
-            {/* Home link */}
             <button
               onClick={scrollToHero}
-              className="w-full text-left px-6 py-3.5 text-xs font-mono uppercase tracking-widest border-b border-white/5"
-              style={{ color: "rgba(255,255,255,0.35)" }}
+              className="w-full text-left px-6 py-4 text-xs font-mono uppercase tracking-widest border-b border-white/8 text-neutral-400 hover:text-white transition-colors"
             >
               Introduction
             </button>
@@ -162,27 +155,29 @@ export default function Header({ activeSection, scrollProgress }: HeaderProps) {
               <button
                 key={s.id}
                 onClick={() => scrollTo(s.id)}
-                className="w-full flex items-center gap-3 px-6 py-3.5 border-b border-white/5 transition-colors"
+                className="w-full flex items-center gap-3 px-6 py-4 border-b border-white/8 transition-colors"
                 style={{
-                  color: activeSection === i ? s.accentColor : "rgba(255,255,255,0.6)",
-                  background: activeSection === i ? `${s.accentColor}0a` : "transparent",
+                  color: activeSection === i ? "white" : "rgba(255,255,255,0.65)",
+                  background: activeSection === i ? `${s.accentColor}0d` : "transparent",
                 }}
               >
                 <span
-                  className="text-xs font-mono"
-                  style={{ color: `${s.accentColor}66`, minWidth: "4rem" }}
+                  className="text-xs font-mono font-semibold"
+                  style={{ color: s.accentColor, minWidth: "4rem" }}
                 >
                   {s.era}
                 </span>
                 <span className="text-sm">{s.title}</span>
                 {activeSection === i && (
-                  <span className="ml-auto text-xs font-mono opacity-60">Active</span>
+                  <span className="ml-auto text-xs font-mono" style={{ color: s.accentColor }}>
+                    ●
+                  </span>
                 )}
               </button>
             ))}
-            <div className="px-6 py-4 text-xs font-mono text-neutral-700 flex items-center justify-between">
+            <div className="px-6 py-4 text-xs font-mono text-neutral-500 flex items-center justify-between">
               <span>Scroll progress</span>
-              <span>{Math.round(scrollProgress * 100)}%</span>
+              <span className="tabular-nums">{Math.round(scrollProgress * 100)}%</span>
             </div>
           </motion.div>
         )}

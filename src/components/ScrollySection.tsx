@@ -40,16 +40,15 @@ function StatCard({
       transition={{ duration: 0.55, delay, ease: EASE }}
       className="relative rounded-xl p-4 group overflow-hidden"
       style={{
-        background: "rgba(6, 8, 18, 0.7)",
+        background: "rgba(12, 16, 32, 0.85)",
         backdropFilter: "blur(16px)",
-        border: `1px solid ${accentColor}28`,
+        border: `1px solid ${accentColor}35`,
       }}
     >
-      {/* Hover sweep */}
       <div
         className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
         style={{
-          background: `linear-gradient(135deg, ${accentColor}10, transparent 60%)`,
+          background: `linear-gradient(135deg, ${accentColor}18, transparent 60%)`,
         }}
       />
       <div className="relative">
@@ -59,13 +58,12 @@ function StatCard({
           className="text-2xl md:text-3xl font-bold leading-none block"
           style={{ color: accentColor, fontFamily: "var(--font-serif), 'Georgia', serif" }}
         />
-        <span className="text-xs text-neutral-500 leading-snug mt-1.5 block">{label}</span>
+        <span className="text-xs text-neutral-400 leading-snug mt-2 block">{label}</span>
       </div>
     </motion.div>
   );
 }
 
-// Big serif quote mark SVG
 function QuoteMark({ color }: { color: string }) {
   return (
     <svg
@@ -73,7 +71,7 @@ function QuoteMark({ color }: { color: string }) {
       height="40"
       viewBox="0 0 56 40"
       className="absolute -top-3 -left-2"
-      style={{ opacity: 0.45 }}
+      style={{ opacity: 0.5 }}
       aria-hidden
     >
       <path
@@ -93,7 +91,6 @@ export default function ScrollySection({ section, isActive, onBecomeActive }: Sc
     if (contentInView) onBecomeActive();
   }, [contentInView, onBecomeActive]);
 
-  // Parallax + accent bar
   useEffect(() => {
     if (!sectionRef.current) return;
     const watermark = sectionRef.current.querySelector(".chapter-watermark") as HTMLElement;
@@ -125,7 +122,7 @@ export default function ScrollySection({ section, isActive, onBecomeActive }: Sc
           onUpdate: (self) => {
             gsap.set(watermark, {
               y: -self.progress * 80,
-              opacity: 0.04 + self.progress * 0.04,
+              opacity: 0.03 + self.progress * 0.04,
             });
           },
         })
@@ -142,9 +139,9 @@ export default function ScrollySection({ section, isActive, onBecomeActive }: Sc
       className="relative overflow-hidden"
       style={{ scrollMarginTop: "56px" }}
     >
-      {/* Full-section ambient glow */}
+      {/* Ambient glow */}
       <motion.div
-        animate={{ opacity: isActive ? 0.07 : 0 }}
+        animate={{ opacity: isActive ? 0.09 : 0 }}
         transition={{ duration: 1.2 }}
         className="absolute inset-0 pointer-events-none"
         style={{
@@ -152,7 +149,7 @@ export default function ScrollySection({ section, isActive, onBecomeActive }: Sc
         }}
       />
 
-      {/* Vertical accent bar (left) */}
+      {/* Left accent bar */}
       <div
         className="accent-bar absolute left-0 top-0 bottom-0 w-0.5 origin-top z-10"
         style={{
@@ -164,9 +161,9 @@ export default function ScrollySection({ section, isActive, onBecomeActive }: Sc
       {/* ── CHAPTER BANNER ── */}
       <div
         className="relative border-b flex flex-col md:flex-row items-start md:items-center justify-between gap-3 px-6 md:px-16 py-10 md:py-14"
-        style={{ borderColor: `${section.accentColor}1a` }}
+        style={{ borderColor: `${section.accentColor}25` }}
       >
-        {/* Big chapter number watermark */}
+        {/* Big watermark number */}
         <span
           className="chapter-watermark absolute right-6 md:right-12 top-1/2 -translate-y-1/2 font-bold select-none pointer-events-none hidden md:block"
           style={{
@@ -181,32 +178,32 @@ export default function ScrollySection({ section, isActive, onBecomeActive }: Sc
         </span>
 
         <div className="space-y-3 max-w-2xl relative z-10">
-          {/* Era + years badge row */}
+          {/* Era + years */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={chapterInView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.6 }}
-            className="flex items-center gap-3"
+            className="flex items-center gap-3 flex-wrap"
           >
             <span
-              className="text-[10px] font-mono tracking-[0.3em] uppercase px-2.5 py-1 rounded-full"
+              className="text-[10px] font-mono tracking-[0.3em] uppercase px-3 py-1 rounded-full font-semibold"
               style={{
                 color: section.accentColor,
-                background: `${section.accentColor}18`,
-                border: `1px solid ${section.accentColor}40`,
+                background: `${section.accentColor}20`,
+                border: `1px solid ${section.accentColor}45`,
               }}
             >
               {section.era}
             </span>
-            <span className="text-[10px] font-mono text-neutral-600 tracking-widest uppercase">
+            <span className="text-xs font-mono text-neutral-400 tracking-widest uppercase">
               {section.years}
             </span>
-            <span className="text-[10px] font-mono text-neutral-700 tracking-widest uppercase hidden md:block">
+            <span className="text-[10px] font-mono text-neutral-600 tracking-widest uppercase hidden md:block">
               · Chapter {section.index + 1} of 7
             </span>
           </motion.div>
 
-          {/* Title — word-mask reveal */}
+          {/* Title */}
           <h2
             className="text-3xl md:text-5xl lg:text-6xl font-bold text-white leading-[1.05] tracking-tight"
             style={{ fontFamily: "var(--font-serif), 'Georgia', serif" }}
@@ -224,18 +221,18 @@ export default function ScrollySection({ section, isActive, onBecomeActive }: Sc
                   className="inline-block"
                 >
                   {word}
-                  {i < section.title.split(" ").length - 1 && " "}
+                  {i < section.title.split(" ").length - 1 && " "}
                 </motion.span>
               </span>
             ))}
           </h2>
 
-          {/* Section subtle subtitle */}
+          {/* Context line */}
           <motion.p
             initial={{ opacity: 0 }}
             animate={chapterInView ? { opacity: 1 } : {}}
             transition={{ duration: 0.7, delay: 0.5 }}
-            className="text-sm text-neutral-500 max-w-xl leading-relaxed pt-1"
+            className="text-sm text-neutral-400 max-w-xl leading-relaxed pt-1"
           >
             {section.context.split(".")[0]}.
           </motion.p>
@@ -244,20 +241,18 @@ export default function ScrollySection({ section, isActive, onBecomeActive }: Sc
 
       {/* ── MAIN CONTENT GRID ── */}
       <div className="px-6 md:px-16 py-12 md:py-16 grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-14">
-        {/* LEFT: Historical context + stats + interview Q (5 cols) */}
-        <div className="md:col-span-5 space-y-6">
-          <motion.div
+
+        {/* LEFT: context + stats + question */}
+        <div className="md:col-span-5 space-y-7">
+          <motion.p
             initial={{ opacity: 0 }}
             animate={contentInView ? { opacity: 1 } : {}}
             transition={{ duration: 0.5, delay: 0.05 }}
+            className="text-[10px] font-mono tracking-[0.3em] uppercase font-semibold"
+            style={{ color: section.accentColor }}
           >
-            <span
-              className="text-[10px] font-mono tracking-[0.3em] uppercase"
-              style={{ color: `${section.accentColor}88` }}
-            >
-              Historical Context
-            </span>
-          </motion.div>
+            Historical Context
+          </motion.p>
 
           <motion.div
             initial={{ opacity: 0, y: 16 }}
@@ -265,21 +260,21 @@ export default function ScrollySection({ section, isActive, onBecomeActive }: Sc
             transition={{ duration: 0.6, delay: 0.1 }}
             className="rounded-xl p-5"
             style={{
-              background: "rgba(255,255,255,0.02)",
-              border: `1px solid ${section.accentColor}18`,
+              background: "rgba(255,255,255,0.04)",
+              border: `1px solid ${section.accentColor}22`,
             }}
           >
-            <p className="text-sm text-neutral-400 leading-relaxed">{section.historicalFact}</p>
+            <p className="text-sm text-neutral-200 leading-relaxed">{section.historicalFact}</p>
           </motion.div>
 
-          {/* Stats 2×2 grid with animated counters */}
+          {/* Stats */}
           <div>
             <motion.p
               initial={{ opacity: 0 }}
               animate={contentInView ? { opacity: 1 } : {}}
               transition={{ duration: 0.5, delay: 0.15 }}
-              className="text-[10px] font-mono tracking-[0.3em] uppercase mb-3"
-              style={{ color: `${section.accentColor}88` }}
+              className="text-[10px] font-mono tracking-[0.3em] uppercase mb-4 font-semibold"
+              style={{ color: section.accentColor }}
             >
               Key Numbers
             </motion.p>
@@ -302,25 +297,25 @@ export default function ScrollySection({ section, isActive, onBecomeActive }: Sc
             initial={{ opacity: 0, y: 12 }}
             animate={contentInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.55, delay: 0.45 }}
-            className="rounded-xl p-4 space-y-2"
+            className="rounded-xl p-5 space-y-2"
             style={{
-              background: `${section.accentColor}08`,
-              border: `1px solid ${section.accentColor}20`,
+              background: `${section.accentColor}0c`,
+              border: `1px solid ${section.accentColor}28`,
             }}
           >
             <p
-              className="text-[10px] font-mono tracking-[0.3em] uppercase"
-              style={{ color: `${section.accentColor}77` }}
+              className="text-[10px] font-mono tracking-[0.3em] uppercase font-semibold"
+              style={{ color: section.accentColor }}
             >
               Interview Question
             </p>
-            <p className="text-sm italic text-neutral-400 leading-relaxed">
+            <p className="text-sm italic text-neutral-300 leading-relaxed">
               &ldquo;{section.interviewQuestion}&rdquo;
             </p>
           </motion.div>
         </div>
 
-        {/* RIGHT: Glass card with findings (7 cols) */}
+        {/* RIGHT: Glass card */}
         <motion.div
           initial={{ opacity: 0, x: 24 }}
           animate={contentInView ? { opacity: 1, x: 0 } : {}}
@@ -331,29 +326,26 @@ export default function ScrollySection({ section, isActive, onBecomeActive }: Sc
         </motion.div>
       </div>
 
-      {/* ── PULL QUOTE BANNER ── */}
+      {/* ── PULL QUOTE ── */}
       {section.quote && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={contentInView ? { opacity: 1 } : {}}
           transition={{ duration: 0.8, delay: 0.3 }}
           className="relative px-6 md:px-24 py-12 md:py-16 border-t"
-          style={{ borderColor: `${section.accentColor}15` }}
+          style={{ borderColor: `${section.accentColor}20` }}
         >
           <div className="relative max-w-4xl">
             <QuoteMark color={section.accentColor} />
             <blockquote
-              className="text-lg md:text-3xl lg:text-4xl font-medium leading-[1.3] pl-2"
-              style={{
-                color: "rgba(255,255,255,0.92)",
-                fontFamily: "var(--font-serif), 'Georgia', serif",
-              }}
+              className="text-lg md:text-3xl lg:text-4xl font-medium leading-[1.35] pl-2 text-white"
+              style={{ fontFamily: "var(--font-serif), 'Georgia', serif" }}
             >
               {section.quote.replace(/^"|"$/g, "")}
             </blockquote>
             <div className="mt-5 flex items-center gap-3">
               <span className="w-8 h-px" style={{ background: section.accentColor }} />
-              <p className="text-[10px] font-mono text-neutral-600 tracking-[0.3em] uppercase">
+              <p className="text-xs font-mono text-neutral-400 tracking-[0.3em] uppercase">
                 Steve Simpson
               </p>
             </div>
@@ -361,11 +353,11 @@ export default function ScrollySection({ section, isActive, onBecomeActive }: Sc
         </motion.div>
       )}
 
-      {/* Section separator */}
+      {/* Separator */}
       <div
         className="h-px w-full"
         style={{
-          background: `linear-gradient(90deg, transparent, ${section.accentColor}33, transparent)`,
+          background: `linear-gradient(90deg, transparent, ${section.accentColor}44, transparent)`,
         }}
       />
     </section>

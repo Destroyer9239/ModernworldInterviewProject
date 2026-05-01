@@ -38,85 +38,80 @@ export default function GlassCard({ section, isActive }: GlassCardProps) {
     >
       {/* Glow halo */}
       <div
-        className="absolute inset-0 rounded-2xl blur-md opacity-25 pointer-events-none"
+        className="absolute inset-0 rounded-2xl blur-xl opacity-30 pointer-events-none"
         style={{
-          background: `linear-gradient(135deg, ${section.accentColor}55, transparent 65%)`,
+          background: `linear-gradient(135deg, ${section.accentColor}66, transparent 65%)`,
         }}
       />
 
       <div
         className="relative rounded-2xl overflow-hidden"
         style={{
-          background: "rgba(6, 8, 18, 0.85)",
+          background: "rgba(12, 16, 32, 0.92)",
           backdropFilter: "blur(28px)",
           WebkitBackdropFilter: "blur(28px)",
-          border: `1px solid ${section.accentColor}2a`,
-          boxShadow: `0 16px 64px rgba(0,0,0,0.6), inset 0 1px 0 ${section.accentColor}18`,
+          border: `1px solid ${section.accentColor}40`,
+          boxShadow: `0 20px 80px rgba(0,0,0,0.7), inset 0 1px 0 ${section.accentColor}22`,
         }}
       >
-        {/* Accent top bar */}
+        {/* Top accent bar */}
         <motion.div
           variants={itemVariants}
           className="h-0.5 w-full"
           style={{
-            background: `linear-gradient(90deg, ${section.accentColor}, ${section.accentColor}44, transparent)`,
+            background: `linear-gradient(90deg, ${section.accentColor}, ${section.accentColor}55, transparent)`,
           }}
         />
 
-        <div className="p-6 md:p-7 space-y-5">
+        <div className="p-6 md:p-8 space-y-6">
           {/* Header row */}
           <motion.div variants={itemVariants} className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <span
-                className="text-xs font-mono font-bold tracking-[0.18em] uppercase px-2.5 py-1 rounded-full"
-                style={{
-                  color: section.accentColor,
-                  background: `${section.accentColor}18`,
-                  border: `1px solid ${section.accentColor}44`,
-                }}
-              >
-                {section.era}
-              </span>
-            </div>
-            <span className="text-xs font-mono text-neutral-600">{section.years}</span>
+            <span
+              className="text-xs font-mono font-bold tracking-[0.18em] uppercase px-3 py-1.5 rounded-full"
+              style={{
+                color: section.accentColor,
+                background: `${section.accentColor}20`,
+                border: `1px solid ${section.accentColor}50`,
+              }}
+            >
+              {section.era}
+            </span>
+            <span className="text-sm font-mono text-neutral-400">{section.years}</span>
           </motion.div>
 
-          {/* Personal context */}
-          <motion.div variants={itemVariants} className="space-y-1">
-            <p className="text-xs font-mono uppercase tracking-widest" style={{ color: `${section.accentColor}77` }}>
+          {/* Steve's story */}
+          <motion.div variants={itemVariants} className="space-y-2">
+            <p className="text-[10px] font-mono uppercase tracking-widest font-semibold" style={{ color: section.accentColor }}>
               Steve&apos;s Story
             </p>
-            <p className="text-sm text-neutral-400 leading-relaxed">{section.context}</p>
+            <p className="text-sm text-neutral-200 leading-relaxed">{section.context}</p>
           </motion.div>
 
           {/* Divider */}
           <motion.div
             variants={itemVariants}
             className="h-px"
-            style={{ background: `linear-gradient(90deg, ${section.accentColor}44, transparent)` }}
+            style={{ background: `linear-gradient(90deg, ${section.accentColor}50, transparent)` }}
           />
 
-          {/* Findings list */}
+          {/* Findings */}
           <motion.div variants={containerVariants}>
             <motion.p
               variants={itemVariants}
-              className="text-xs font-mono uppercase tracking-widest mb-3"
-              style={{ color: `${section.accentColor}77` }}
+              className="text-[10px] font-mono uppercase tracking-widest mb-4 font-semibold"
+              style={{ color: section.accentColor }}
             >
               Key Findings
             </motion.p>
-            <motion.ul
-              variants={containerVariants}
-              className="space-y-2.5"
-            >
+            <motion.ul variants={containerVariants} className="space-y-3">
               {section.findings.map((finding, i) => (
                 <motion.li
                   key={i}
                   variants={itemVariants}
-                  className="flex gap-3 text-sm text-neutral-300 leading-relaxed"
+                  className="flex gap-3 text-sm text-neutral-200 leading-relaxed"
                 >
                   <span
-                    className="mt-2 shrink-0 w-1 h-1 rounded-full"
+                    className="mt-2 shrink-0 w-1.5 h-1.5 rounded-full"
                     style={{ background: section.accentColor }}
                   />
                   <span>{finding}</span>

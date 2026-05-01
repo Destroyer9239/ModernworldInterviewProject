@@ -5,7 +5,6 @@ import { motion } from "framer-motion";
 import gsap from "gsap";
 import { SUBJECT_BIO } from "@/data/sections";
 
-// Star particle layer - pure CSS/canvas free, GSAP randomized
 function StarField() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -25,28 +24,27 @@ function StarField() {
       canvas.style.width = window.innerWidth + "px";
       canvas.style.height = window.innerHeight + "px";
       ctx.scale(dpr, dpr);
-
-      const count = Math.min(180, Math.floor((window.innerWidth * window.innerHeight) / 9000));
+      const count = Math.min(220, Math.floor((window.innerWidth * window.innerHeight) / 7000));
       stars = Array.from({ length: count }).map(() => ({
         x: Math.random() * window.innerWidth,
         y: Math.random() * window.innerHeight,
-        r: Math.random() * 1.4 + 0.2,
-        o: Math.random() * 0.6 + 0.2,
-        vy: Math.random() * 0.05 + 0.02,
+        r: Math.random() * 1.7 + 0.3,
+        o: Math.random() * 0.75 + 0.3,
+        vy: Math.random() * 0.04 + 0.015,
         tw: Math.random() * Math.PI * 2,
       }));
     };
 
-    const draw = (t: number) => {
+    const draw = () => {
       ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
       stars.forEach((s) => {
         s.y += s.vy;
-        s.tw += 0.025;
+        s.tw += 0.02;
         if (s.y > window.innerHeight + 5) s.y = -5;
         const twinkle = (Math.sin(s.tw) + 1) * 0.5;
         ctx.beginPath();
         ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(180, 210, 255, ${s.o * (0.5 + twinkle * 0.5)})`;
+        ctx.fillStyle = `rgba(200, 220, 255, ${s.o * (0.5 + twinkle * 0.5)})`;
         ctx.fill();
       });
       raf = requestAnimationFrame(draw);
@@ -65,12 +63,11 @@ function StarField() {
     <canvas
       ref={canvasRef}
       className="absolute inset-0 pointer-events-none"
-      style={{ opacity: 0.6 }}
+      style={{ opacity: 0.8 }}
     />
   );
 }
 
-// Counter that updates live
 function LiveYear() {
   const [year, setYear] = useState(1967);
   useEffect(() => {
@@ -87,7 +84,7 @@ function LiveYear() {
 
 export default function HeroSection() {
   const lineRef = useRef<HTMLDivElement>(null);
-  const titleWords = ["The", "Pilot’s", "Son"];
+  const titleWords = ["The", "Pilot's", "Son"];
 
   useEffect(() => {
     if (lineRef.current) {
@@ -111,38 +108,26 @@ export default function HeroSection() {
       id="hero"
       className="relative flex flex-col items-center justify-center min-h-screen text-center px-6 pt-14 overflow-hidden"
     >
-      {/* Star field */}
       <StarField />
 
-      {/* Radial center glow */}
+      {/* Blue center glow */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            "radial-gradient(ellipse 80% 60% at 50% 40%, rgba(74,144,217,0.1) 0%, transparent 70%)",
+            "radial-gradient(ellipse 80% 55% at 50% 40%, rgba(74,144,217,0.16) 0%, transparent 70%)",
         }}
       />
 
-      {/* Subtle grid */}
-      <div
-        className="absolute inset-0 opacity-[0.02] pointer-events-none"
-        style={{
-          backgroundImage:
-            "linear-gradient(rgba(255,255,255,0.6) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.6) 1px, transparent 1px)",
-          backgroundSize: "60px 60px",
-        }}
-      />
-
-      {/* Top corner labels */}
+      {/* Corner labels */}
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2, duration: 0.8 }}
         className="absolute top-20 left-6 md:left-10 text-left"
       >
-        <p className="text-[10px] font-mono text-neutral-600 tracking-[0.3em] uppercase">
-          File N°
-          <span className="text-blue-400/80 ml-2">07.SS.1967</span>
+        <p className="text-[10px] font-mono text-neutral-500 tracking-[0.3em] uppercase">
+          File N°<span className="text-blue-400 ml-2">07.SS.1967</span>
         </p>
       </motion.div>
       <motion.div
@@ -151,9 +136,8 @@ export default function HeroSection() {
         transition={{ delay: 0.2, duration: 0.8 }}
         className="absolute top-20 right-6 md:right-10 text-right"
       >
-        <p className="text-[10px] font-mono text-neutral-600 tracking-[0.3em] uppercase">
-          <LiveYear />
-          <span className="text-neutral-700 ml-2">/ ARCHIVE</span>
+        <p className="text-[10px] font-mono text-neutral-500 tracking-[0.3em] uppercase">
+          <LiveYear /><span className="text-neutral-600 ml-2">/ ARCHIVE</span>
         </p>
       </motion.div>
 
@@ -168,19 +152,19 @@ export default function HeroSection() {
           initial={{ opacity: 0, letterSpacing: "0.6em" }}
           animate={{ opacity: 1, letterSpacing: "0.3em" }}
           transition={{ duration: 1.4, delay: 0.4 }}
-          className="text-xs font-mono text-blue-400 uppercase"
+          className="text-xs font-mono text-blue-400 uppercase tracking-[0.3em]"
         >
           Memories of the Modern World
         </motion.p>
 
-        {/* Animated rule */}
+        {/* Rule */}
         <div
           ref={lineRef}
           className="mx-auto w-24 h-px origin-left"
           style={{ background: "linear-gradient(90deg, #4a90d9, #8e44ad)" }}
         />
 
-        {/* Title — word-by-word with mask */}
+        {/* Title */}
         <h1
           className="text-5xl md:text-7xl lg:text-8xl font-bold leading-[0.95] tracking-tight"
           style={{ fontFamily: "var(--font-serif), 'Georgia', serif" }}
@@ -202,7 +186,7 @@ export default function HeroSection() {
                 className={`inline-block ${i === titleWords.length - 1 ? "italic text-neutral-300" : "text-white"}`}
               >
                 {word}
-                {i < titleWords.length - 1 && " "}
+                {i < titleWords.length - 1 && " "}
               </motion.span>
             </span>
           ))}
@@ -213,13 +197,13 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 1.4, ease: [0.22, 1, 0.36, 1] }}
-          className="text-base md:text-lg text-neutral-400 max-w-xl mx-auto leading-relaxed"
+          className="text-base md:text-lg text-neutral-300 max-w-xl mx-auto leading-relaxed"
         >
-          A scrollytelling journey through the Cold War, Vietnam, and 9/11 — told by the son
-          of a Navy fighter pilot who lived it all.
+          A scrollytelling journey through the Cold War, Vietnam, and 9/11 —{" "}
+          told by the son of a Navy fighter pilot who lived it all.
         </motion.p>
 
-        {/* Subject bio card */}
+        {/* Bio card */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -229,56 +213,32 @@ export default function HeroSection() {
           <div
             className="relative rounded-2xl overflow-hidden"
             style={{
-              background: "rgba(6, 8, 18, 0.78)",
+              background: "rgba(10, 14, 28, 0.92)",
               backdropFilter: "blur(28px)",
               WebkitBackdropFilter: "blur(28px)",
-              border: "1px solid rgba(74,144,217,0.25)",
+              border: "1px solid rgba(74,144,217,0.3)",
               boxShadow:
-                "0 16px 64px rgba(0,0,0,0.5), inset 0 1px 0 rgba(74,144,217,0.12)",
+                "0 20px 80px rgba(0,0,0,0.6), inset 0 1px 0 rgba(74,144,217,0.15)",
             }}
           >
-            {/* Top accent gradient */}
             <div
               className="h-0.5 w-full"
               style={{
                 background: "linear-gradient(90deg, #4a90d9, #8e44ad, transparent)",
               }}
             />
-            {/* Corner brackets */}
-            {[
-              { top: "8px", left: "8px", borderTop: 1, borderLeft: 1 },
-              { top: "8px", right: "8px", borderTop: 1, borderRight: 1 },
-              { bottom: "8px", left: "8px", borderBottom: 1, borderLeft: 1 },
-              { bottom: "8px", right: "8px", borderBottom: 1, borderRight: 1 },
-            ].map((pos, i) => (
-              <span
-                key={i}
-                className="absolute pointer-events-none"
-                style={{
-                  ...pos,
-                  width: 12,
-                  height: 12,
-                  borderColor: "rgba(74,144,217,0.5)",
-                  borderTopWidth: pos.borderTop ? 1 : 0,
-                  borderLeftWidth: pos.borderLeft ? 1 : 0,
-                  borderRightWidth: pos.borderRight ? 1 : 0,
-                  borderBottomWidth: pos.borderBottom ? 1 : 0,
-                  borderStyle: "solid",
-                }}
-              />
-            ))}
 
-            <div className="px-6 py-5">
-              <div className="flex items-center justify-between mb-4">
-                <p className="text-xs font-mono text-blue-400 tracking-[0.2em] uppercase">
+            <div className="px-6 py-6">
+              <div className="flex items-center justify-between mb-5">
+                <p className="text-xs font-mono text-blue-400 tracking-[0.2em] uppercase font-semibold">
                   Interview Subject
                 </p>
-                <p className="text-[10px] font-mono text-neutral-600 tracking-widest">
-                  CLASSIFIED · DECLASSIFIED 2026
+                <p className="text-[10px] font-mono text-neutral-500 tracking-widest">
+                  Cold War Archive
                 </p>
               </div>
 
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-5 mb-5">
                 {bioFields.map((f, idx) => (
                   <motion.div
                     key={f.label}
@@ -287,15 +247,15 @@ export default function HeroSection() {
                     transition={{ delay: 2 + idx * 0.08, duration: 0.5 }}
                     className="text-left"
                   >
-                    <p className="text-[10px] font-mono text-neutral-600 uppercase tracking-widest mb-1">
+                    <p className="text-[10px] font-mono text-neutral-500 uppercase tracking-widest mb-1.5">
                       {f.label}
                     </p>
-                    <p className="text-sm font-semibold text-white">{f.value}</p>
+                    <p className="text-sm font-semibold text-white leading-snug">{f.value}</p>
                   </motion.div>
                 ))}
               </div>
 
-              <p className="text-xs text-neutral-500 leading-relaxed text-left border-t border-white/5 pt-3">
+              <p className="text-sm text-neutral-300 leading-relaxed text-left border-t border-white/10 pt-4">
                 {SUBJECT_BIO.context}
               </p>
             </div>
@@ -309,13 +269,13 @@ export default function HeroSection() {
           transition={{ delay: 2.5 }}
           className="flex flex-col items-center gap-3 pt-4"
         >
-          <span className="text-[10px] font-mono text-neutral-600 tracking-[0.3em] uppercase">
+          <span className="text-[10px] font-mono text-neutral-500 tracking-[0.3em] uppercase">
             Scroll to begin
           </span>
           <motion.div
             animate={{ y: [0, 8, 0] }}
             transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
-            className="w-5 h-8 rounded-full border border-neutral-700 flex items-start justify-center pt-1.5"
+            className="w-5 h-8 rounded-full border border-neutral-600 flex items-start justify-center pt-1.5"
           >
             <div className="w-1 h-2 rounded-full bg-blue-400" />
           </motion.div>
