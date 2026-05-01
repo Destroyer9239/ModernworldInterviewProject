@@ -4,10 +4,15 @@ import { useState, useCallback, useEffect } from "react";
 import dynamic from "next/dynamic";
 import { STORY_SECTIONS } from "@/data/sections";
 import HeroSection from "@/components/HeroSection";
+import ChapterIndex from "@/components/ChapterIndex";
 import ScrollySection from "@/components/ScrollySection";
 import EpilogueSection from "@/components/EpilogueSection";
+import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import AudioPlayer from "@/components/AudioPlayer";
+import LoadingScreen from "@/components/LoadingScreen";
+import SmoothScroll from "@/components/SmoothScroll";
+import CustomCursor from "@/components/CustomCursor";
 import { useScrollProgress } from "@/hooks/useScrollProgress";
 
 const JetScene = dynamic(() => import("@/components/JetScene"), { ssr: false });
@@ -34,43 +39,57 @@ export default function Home() {
   const currentSection = STORY_SECTIONS[activeSectionIndex] ?? STORY_SECTIONS[0];
 
   return (
-    <main className="relative bg-[#020408] text-white min-h-screen">
-      {/* ── Sticky header with full section nav ── */}
-      <Header activeSection={activeSectionIndex} scrollProgress={scrollProgress} />
+    <SmoothScroll>
+      <main className="relative bg-[#020408] text-white min-h-screen">
+        {/* Loading screen — covers everything until ready */}
+        <LoadingScreen />
 
-      {/* ── Audio player (bottom-right) ── */}
-      <AudioPlayer />
+        {/* Custom cursor (desktop only) */}
+        <CustomCursor />
 
-      {/* ── Ambient 3D canvas — fixed background layer ── */}
-      <div
-        className="fixed inset-0 pointer-events-none"
-        style={{ zIndex: 0, opacity: 0.35 }}
-      >
-        <JetScene
-          animState={currentSection.jetState}
-          accentColor={currentSection.accentColor}
-          hasModel={hasModel}
-        />
-      </div>
+        {/* Sticky header with section nav */}
+        <Header activeSection={activeSectionIndex} scrollProgress={scrollProgress} />
 
-      {/* ── All scrollable content sits above the canvas ── */}
-      <div className="relative" style={{ zIndex: 10 }}>
-        {/* Hero */}
-        <HeroSection />
+        {/* Audio player */}
+        <AudioPlayer />
 
-        {/* Story sections */}
-        {STORY_SECTIONS.map((section, i) => (
-          <ScrollySection
-            key={section.id}
-            section={section}
-            isActive={activeSectionIndex === i}
-            onBecomeActive={() => handleSectionActive(i)}
+        {/* Ambient 3D canvas — fixed background layer */}
+        <div
+          className="fixed inset-0 pointer-events-none"
+          style={{ zIndex: 0, opacity: 0.32 }}
+        >
+          <JetScene
+            animState={currentSection.jetState}
+            accentColor={currentSection.accentColor}
+            hasModel={hasModel}
           />
-        ))}
+        </div>
 
-        {/* Epilogue */}
-        <EpilogueSection />
-      </div>
-    </main>
+        {/* All scrollable content */}
+        <div className="relative" style={{ zIndex: 10 }}>
+          {/* Hero with starfield + bio */}
+          <HeroSection />
+
+          {/* Chapter index / table of contents */}
+          <ChapterIndex />
+
+          {/* Story sections */}
+          {STORY_SECTIONS.map((section, i) => (
+            <ScrollySection
+              key={section.id}
+              section={section}
+              isActive={activeSectionIndex === i}
+              onBecomeActive={() => handleSectionActive(i)}
+            />
+          ))}
+
+          {/* Epilogue */}
+          <EpilogueSection />
+
+          {/* Footer */}
+          <Footer />
+        </div>
+      </main>
+    </SmoothScroll>
   );
 }

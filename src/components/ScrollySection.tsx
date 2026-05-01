@@ -6,6 +6,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { StorySection } from "@/data/sections";
 import GlassCard from "./GlassCard";
+import AnimatedCounter from "./AnimatedCounter";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -16,6 +17,8 @@ interface ScrollySectionProps {
   isActive: boolean;
   onBecomeActive: () => void;
 }
+
+const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
 function StatCard({
   value,
@@ -34,22 +37,50 @@ function StatCard({
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.55, delay, ease: [0.22, 1, 0.36, 1] as [number,number,number,number] }}
-      className="rounded-xl p-4 flex flex-col gap-1"
+      transition={{ duration: 0.55, delay, ease: EASE }}
+      className="relative rounded-xl p-4 group overflow-hidden"
       style={{
         background: "rgba(6, 8, 18, 0.7)",
         backdropFilter: "blur(16px)",
         border: `1px solid ${accentColor}28`,
       }}
     >
-      <span
-        className="text-2xl md:text-3xl font-bold leading-none"
-        style={{ color: accentColor, fontFamily: "'Georgia', serif" }}
-      >
-        {value}
-      </span>
-      <span className="text-xs text-neutral-500 leading-snug mt-1">{label}</span>
+      {/* Hover sweep */}
+      <div
+        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+        style={{
+          background: `linear-gradient(135deg, ${accentColor}10, transparent 60%)`,
+        }}
+      />
+      <div className="relative">
+        <AnimatedCounter
+          value={value}
+          duration={1.6}
+          className="text-2xl md:text-3xl font-bold leading-none block"
+          style={{ color: accentColor, fontFamily: "var(--font-serif), 'Georgia', serif" }}
+        />
+        <span className="text-xs text-neutral-500 leading-snug mt-1.5 block">{label}</span>
+      </div>
     </motion.div>
+  );
+}
+
+// Big serif quote mark SVG
+function QuoteMark({ color }: { color: string }) {
+  return (
+    <svg
+      width="56"
+      height="40"
+      viewBox="0 0 56 40"
+      className="absolute -top-3 -left-2"
+      style={{ opacity: 0.45 }}
+      aria-hidden
+    >
+      <path
+        d="M0 40 V18 C0 8 6 0 18 0 V8 C12 8 8 13 8 18 H18 V40 Z M30 40 V18 C30 8 36 0 48 0 V8 C42 8 38 13 38 18 H48 V40 Z"
+        fill={color}
+      />
+    </svg>
   );
 }
 
@@ -62,21 +93,46 @@ export default function ScrollySection({ section, isActive, onBecomeActive }: Sc
     if (contentInView) onBecomeActive();
   }, [contentInView, onBecomeActive]);
 
-  // Accent bar GSAP
+  // Parallax + accent bar
   useEffect(() => {
     if (!sectionRef.current) return;
-    const el = sectionRef.current.querySelector(".accent-bar") as HTMLElement;
-    if (!el) return;
-    const trigger = ScrollTrigger.create({
-      trigger: sectionRef.current,
-      start: "top 65%",
-      end: "bottom 35%",
-      onEnter: () => gsap.to(el, { scaleY: 1, duration: 0.9, ease: "power2.out" }),
-      onLeave: () => gsap.to(el, { scaleY: 0, duration: 0.4 }),
-      onEnterBack: () => gsap.to(el, { scaleY: 1, duration: 0.9, ease: "power2.out" }),
-      onLeaveBack: () => gsap.to(el, { scaleY: 0, duration: 0.4 }),
-    });
-    return () => trigger.kill();
+    const watermark = sectionRef.current.querySelector(".chapter-watermark") as HTMLElement;
+    const accentBar = sectionRef.current.querySelector(".accent-bar") as HTMLElement;
+
+    const triggers: ScrollTrigger[] = [];
+
+    if (accentBar) {
+      triggers.push(
+        ScrollTrigger.create({
+          trigger: sectionRef.current,
+          start: "top 65%",
+          end: "bottom 35%",
+          onEnter: () => gsap.to(accentBar, { scaleY: 1, duration: 0.9, ease: "power2.out" }),
+          onLeave: () => gsap.to(accentBar, { scaleY: 0, duration: 0.4 }),
+          onEnterBack: () => gsap.to(accentBar, { scaleY: 1, duration: 0.9, ease: "power2.out" }),
+          onLeaveBack: () => gsap.to(accentBar, { scaleY: 0, duration: 0.4 }),
+        })
+      );
+    }
+
+    if (watermark) {
+      triggers.push(
+        ScrollTrigger.create({
+          trigger: sectionRef.current,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: 1,
+          onUpdate: (self) => {
+            gsap.set(watermark, {
+              y: -self.progress * 80,
+              opacity: 0.04 + self.progress * 0.04,
+            });
+          },
+        })
+      );
+    }
+
+    return () => triggers.forEach((t) => t.kill());
   }, []);
 
   return (
@@ -86,7 +142,7 @@ export default function ScrollySection({ section, isActive, onBecomeActive }: Sc
       className="relative overflow-hidden"
       style={{ scrollMarginTop: "56px" }}
     >
-      {/* Full-section background glow */}
+      {/* Full-section ambient glow */}
       <motion.div
         animate={{ opacity: isActive ? 0.07 : 0 }}
         transition={{ duration: 1.2 }}
@@ -96,7 +152,7 @@ export default function ScrollySection({ section, isActive, onBecomeActive }: Sc
         }}
       />
 
-      {/* Accent left bar */}
+      {/* Vertical accent bar (left) */}
       <div
         className="accent-bar absolute left-0 top-0 bottom-0 w-0.5 origin-top z-10"
         style={{
@@ -107,25 +163,25 @@ export default function ScrollySection({ section, isActive, onBecomeActive }: Sc
 
       {/* ── CHAPTER BANNER ── */}
       <div
-        className="relative border-b flex flex-col md:flex-row items-start md:items-center justify-between gap-3 px-6 md:px-16 py-8 md:py-10"
+        className="relative border-b flex flex-col md:flex-row items-start md:items-center justify-between gap-3 px-6 md:px-16 py-10 md:py-14"
         style={{ borderColor: `${section.accentColor}1a` }}
       >
         {/* Big chapter number watermark */}
-        <motion.span
-          animate={{ opacity: isActive ? 0.05 : 0 }}
-          transition={{ duration: 0.8 }}
-          className="absolute right-8 top-1/2 -translate-y-1/2 font-bold select-none pointer-events-none hidden md:block"
+        <span
+          className="chapter-watermark absolute right-6 md:right-12 top-1/2 -translate-y-1/2 font-bold select-none pointer-events-none hidden md:block"
           style={{
-            fontSize: "10rem",
+            fontSize: "clamp(8rem, 14vw, 14rem)",
             lineHeight: 1,
             color: section.accentColor,
-            fontFamily: "'Georgia', serif",
+            fontFamily: "var(--font-serif), 'Georgia', serif",
+            opacity: 0.04,
           }}
         >
-          {section.index + 1}
-        </motion.span>
+          {String(section.index + 1).padStart(2, "0")}
+        </span>
 
-        <div className="space-y-2 max-w-2xl">
+        <div className="space-y-3 max-w-2xl relative z-10">
+          {/* Era + years badge row */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={chapterInView ? { opacity: 1, x: 0 } : {}}
@@ -133,7 +189,7 @@ export default function ScrollySection({ section, isActive, onBecomeActive }: Sc
             className="flex items-center gap-3"
           >
             <span
-              className="text-xs font-mono tracking-[0.2em] uppercase px-2.5 py-1 rounded-full"
+              className="text-[10px] font-mono tracking-[0.3em] uppercase px-2.5 py-1 rounded-full"
               style={{
                 color: section.accentColor,
                 background: `${section.accentColor}18`,
@@ -142,43 +198,67 @@ export default function ScrollySection({ section, isActive, onBecomeActive }: Sc
             >
               {section.era}
             </span>
-            <span className="text-xs font-mono text-neutral-600 tracking-widest">
+            <span className="text-[10px] font-mono text-neutral-600 tracking-widest uppercase">
               {section.years}
+            </span>
+            <span className="text-[10px] font-mono text-neutral-700 tracking-widest uppercase hidden md:block">
+              · Chapter {section.index + 1} of 7
             </span>
           </motion.div>
 
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            animate={chapterInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.7, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-            className="text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-tight"
-            style={{ fontFamily: "'Georgia', serif" }}
+          {/* Title — word-mask reveal */}
+          <h2
+            className="text-3xl md:text-5xl lg:text-6xl font-bold text-white leading-[1.05] tracking-tight"
+            style={{ fontFamily: "var(--font-serif), 'Georgia', serif" }}
           >
-            {section.title}
-          </motion.h2>
+            {section.title.split(" ").map((word, i) => (
+              <span
+                key={i}
+                className="inline-block overflow-hidden align-baseline"
+                style={{ paddingBottom: "0.05em", lineHeight: "1.1" }}
+              >
+                <motion.span
+                  initial={{ y: "110%" }}
+                  animate={chapterInView ? { y: "0%" } : {}}
+                  transition={{ duration: 0.8, delay: 0.15 + i * 0.06, ease: EASE }}
+                  className="inline-block"
+                >
+                  {word}
+                  {i < section.title.split(" ").length - 1 && " "}
+                </motion.span>
+              </span>
+            ))}
+          </h2>
+
+          {/* Section subtle subtitle */}
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={chapterInView ? { opacity: 1 } : {}}
+            transition={{ duration: 0.7, delay: 0.5 }}
+            className="text-sm text-neutral-500 max-w-xl leading-relaxed pt-1"
+          >
+            {section.context.split(".")[0]}.
+          </motion.p>
         </div>
       </div>
 
       {/* ── MAIN CONTENT GRID ── */}
-      <div className="px-6 md:px-16 py-10 md:py-14 grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-14">
-
-        {/* LEFT: Historical context + fact + stats */}
-        <div className="space-y-6">
-          {/* Historical context label */}
+      <div className="px-6 md:px-16 py-12 md:py-16 grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-14">
+        {/* LEFT: Historical context + stats + interview Q (5 cols) */}
+        <div className="md:col-span-5 space-y-6">
           <motion.div
             initial={{ opacity: 0 }}
             animate={contentInView ? { opacity: 1 } : {}}
             transition={{ duration: 0.5, delay: 0.05 }}
           >
             <span
-              className="text-xs font-mono tracking-widest uppercase"
+              className="text-[10px] font-mono tracking-[0.3em] uppercase"
               style={{ color: `${section.accentColor}88` }}
             >
               Historical Context
             </span>
           </motion.div>
 
-          {/* Historical fact paragraph */}
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             animate={contentInView ? { opacity: 1, y: 0 } : {}}
@@ -192,13 +272,13 @@ export default function ScrollySection({ section, isActive, onBecomeActive }: Sc
             <p className="text-sm text-neutral-400 leading-relaxed">{section.historicalFact}</p>
           </motion.div>
 
-          {/* Stats 2×2 grid */}
+          {/* Stats 2×2 grid with animated counters */}
           <div>
             <motion.p
               initial={{ opacity: 0 }}
               animate={contentInView ? { opacity: 1 } : {}}
               transition={{ duration: 0.5, delay: 0.15 }}
-              className="text-xs font-mono tracking-widest uppercase mb-3"
+              className="text-[10px] font-mono tracking-[0.3em] uppercase mb-3"
               style={{ color: `${section.accentColor}88` }}
             >
               Key Numbers
@@ -228,7 +308,10 @@ export default function ScrollySection({ section, isActive, onBecomeActive }: Sc
               border: `1px solid ${section.accentColor}20`,
             }}
           >
-            <p className="text-xs font-mono tracking-widest uppercase" style={{ color: `${section.accentColor}77` }}>
+            <p
+              className="text-[10px] font-mono tracking-[0.3em] uppercase"
+              style={{ color: `${section.accentColor}77` }}
+            >
               Interview Question
             </p>
             <p className="text-sm italic text-neutral-400 leading-relaxed">
@@ -237,11 +320,12 @@ export default function ScrollySection({ section, isActive, onBecomeActive }: Sc
           </motion.div>
         </div>
 
-        {/* RIGHT: Glass card with findings */}
+        {/* RIGHT: Glass card with findings (7 cols) */}
         <motion.div
           initial={{ opacity: 0, x: 24 }}
           animate={contentInView ? { opacity: 1, x: 0 } : {}}
-          transition={{ duration: 0.7, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.7, delay: 0.15, ease: EASE }}
+          className="md:col-span-7"
         >
           <GlassCard section={section} isActive={isActive} />
         </motion.div>
@@ -253,29 +337,36 @@ export default function ScrollySection({ section, isActive, onBecomeActive }: Sc
           initial={{ opacity: 0 }}
           animate={contentInView ? { opacity: 1 } : {}}
           transition={{ duration: 0.8, delay: 0.3 }}
-          className="relative px-6 md:px-24 py-10 md:py-12 border-t"
+          className="relative px-6 md:px-24 py-12 md:py-16 border-t"
           style={{ borderColor: `${section.accentColor}15` }}
         >
-          <div
-            className="absolute left-6 md:left-14 top-0 bottom-0 w-px"
-            style={{ background: `linear-gradient(180deg, transparent, ${section.accentColor}55, transparent)` }}
-          />
-          <blockquote
-            className="text-lg md:text-2xl font-medium leading-relaxed max-w-3xl"
-            style={{ color: section.accentColor, fontFamily: "'Georgia', serif" }}
-          >
-            {section.quote}
-          </blockquote>
-          <p className="text-xs font-mono text-neutral-600 mt-3 tracking-widest uppercase">
-            — Steve Simpson
-          </p>
+          <div className="relative max-w-4xl">
+            <QuoteMark color={section.accentColor} />
+            <blockquote
+              className="text-lg md:text-3xl lg:text-4xl font-medium leading-[1.3] pl-2"
+              style={{
+                color: "rgba(255,255,255,0.92)",
+                fontFamily: "var(--font-serif), 'Georgia', serif",
+              }}
+            >
+              {section.quote.replace(/^"|"$/g, "")}
+            </blockquote>
+            <div className="mt-5 flex items-center gap-3">
+              <span className="w-8 h-px" style={{ background: section.accentColor }} />
+              <p className="text-[10px] font-mono text-neutral-600 tracking-[0.3em] uppercase">
+                Steve Simpson
+              </p>
+            </div>
+          </div>
         </motion.div>
       )}
 
-      {/* Section separator line */}
+      {/* Section separator */}
       <div
         className="h-px w-full"
-        style={{ background: `linear-gradient(90deg, transparent, ${section.accentColor}33, transparent)` }}
+        style={{
+          background: `linear-gradient(90deg, transparent, ${section.accentColor}33, transparent)`,
+        }}
       />
     </section>
   );

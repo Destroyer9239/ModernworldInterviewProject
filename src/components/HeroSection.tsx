@@ -1,12 +1,93 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import gsap from "gsap";
 import { SUBJECT_BIO } from "@/data/sections";
 
+// Star particle layer - pure CSS/canvas free, GSAP randomized
+function StarField() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    let raf = 0;
+    let stars: { x: number; y: number; r: number; o: number; vy: number; tw: number }[] = [];
+
+    const resize = () => {
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = window.innerWidth * dpr;
+      canvas.height = window.innerHeight * dpr;
+      canvas.style.width = window.innerWidth + "px";
+      canvas.style.height = window.innerHeight + "px";
+      ctx.scale(dpr, dpr);
+
+      const count = Math.min(180, Math.floor((window.innerWidth * window.innerHeight) / 9000));
+      stars = Array.from({ length: count }).map(() => ({
+        x: Math.random() * window.innerWidth,
+        y: Math.random() * window.innerHeight,
+        r: Math.random() * 1.4 + 0.2,
+        o: Math.random() * 0.6 + 0.2,
+        vy: Math.random() * 0.05 + 0.02,
+        tw: Math.random() * Math.PI * 2,
+      }));
+    };
+
+    const draw = (t: number) => {
+      ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+      stars.forEach((s) => {
+        s.y += s.vy;
+        s.tw += 0.025;
+        if (s.y > window.innerHeight + 5) s.y = -5;
+        const twinkle = (Math.sin(s.tw) + 1) * 0.5;
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(180, 210, 255, ${s.o * (0.5 + twinkle * 0.5)})`;
+        ctx.fill();
+      });
+      raf = requestAnimationFrame(draw);
+    };
+
+    resize();
+    window.addEventListener("resize", resize);
+    raf = requestAnimationFrame(draw);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("resize", resize);
+    };
+  }, []);
+
+  return (
+    <canvas
+      ref={canvasRef}
+      className="absolute inset-0 pointer-events-none"
+      style={{ opacity: 0.6 }}
+    />
+  );
+}
+
+// Counter that updates live
+function LiveYear() {
+  const [year, setYear] = useState(1967);
+  useEffect(() => {
+    let cur = 1945;
+    const id = setInterval(() => {
+      cur += 1;
+      if (cur > new Date().getFullYear()) cur = 1945;
+      setYear(cur);
+    }, 80);
+    return () => clearInterval(id);
+  }, []);
+  return <span className="tabular-nums">{year}</span>;
+}
+
 export default function HeroSection() {
   const lineRef = useRef<HTMLDivElement>(null);
+  const titleWords = ["The", "Pilot’s", "Son"];
 
   useEffect(() => {
     if (lineRef.current) {
@@ -26,18 +107,25 @@ export default function HeroSection() {
   ];
 
   return (
-    <section id="hero" className="relative flex flex-col items-center justify-center min-h-screen text-center px-6 pt-14 overflow-hidden">
-      {/* Radial glow */}
+    <section
+      id="hero"
+      className="relative flex flex-col items-center justify-center min-h-screen text-center px-6 pt-14 overflow-hidden"
+    >
+      {/* Star field */}
+      <StarField />
+
+      {/* Radial center glow */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            "radial-gradient(ellipse 80% 60% at 50% 40%, rgba(74,144,217,0.09) 0%, transparent 70%)",
+            "radial-gradient(ellipse 80% 60% at 50% 40%, rgba(74,144,217,0.1) 0%, transparent 70%)",
         }}
       />
+
       {/* Subtle grid */}
       <div
-        className="absolute inset-0 opacity-[0.025] pointer-events-none"
+        className="absolute inset-0 opacity-[0.02] pointer-events-none"
         style={{
           backgroundImage:
             "linear-gradient(rgba(255,255,255,0.6) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.6) 1px, transparent 1px)",
@@ -45,18 +133,42 @@ export default function HeroSection() {
         }}
       />
 
+      {/* Top corner labels */}
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2, duration: 0.8 }}
+        className="absolute top-20 left-6 md:left-10 text-left"
+      >
+        <p className="text-[10px] font-mono text-neutral-600 tracking-[0.3em] uppercase">
+          File N°
+          <span className="text-blue-400/80 ml-2">07.SS.1967</span>
+        </p>
+      </motion.div>
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2, duration: 0.8 }}
+        className="absolute top-20 right-6 md:right-10 text-right"
+      >
+        <p className="text-[10px] font-mono text-neutral-600 tracking-[0.3em] uppercase">
+          <LiveYear />
+          <span className="text-neutral-700 ml-2">/ ARCHIVE</span>
+        </p>
+      </motion.div>
+
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ duration: 1.5 }}
-        className="relative z-10 w-full max-w-4xl space-y-6"
+        transition={{ duration: 1.2, delay: 0.3 }}
+        className="relative z-10 w-full max-w-4xl space-y-7"
       >
         {/* Eyebrow */}
         <motion.p
           initial={{ opacity: 0, letterSpacing: "0.6em" }}
           animate={{ opacity: 1, letterSpacing: "0.3em" }}
-          transition={{ duration: 1.2, delay: 0.3 }}
-          className="text-xs font-mono text-blue-400 uppercase tracking-[0.3em]"
+          transition={{ duration: 1.4, delay: 0.4 }}
+          className="text-xs font-mono text-blue-400 uppercase"
         >
           Memories of the Modern World
         </motion.p>
@@ -68,64 +180,121 @@ export default function HeroSection() {
           style={{ background: "linear-gradient(90deg, #4a90d9, #8e44ad)" }}
         />
 
-        {/* Main title */}
-        <motion.h1
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          className="text-5xl md:text-7xl font-bold text-white leading-tight"
-          style={{ fontFamily: "'Georgia', serif" }}
+        {/* Title — word-by-word with mask */}
+        <h1
+          className="text-5xl md:text-7xl lg:text-8xl font-bold leading-[0.95] tracking-tight"
+          style={{ fontFamily: "var(--font-serif), 'Georgia', serif" }}
         >
-          The Pilot&apos;s Son
-        </motion.h1>
+          {titleWords.map((word, i) => (
+            <span
+              key={i}
+              className="inline-block overflow-hidden align-baseline"
+              style={{ paddingBottom: "0.05em", lineHeight: "1" }}
+            >
+              <motion.span
+                initial={{ y: "110%" }}
+                animate={{ y: "0%" }}
+                transition={{
+                  duration: 0.9,
+                  delay: 0.7 + i * 0.12,
+                  ease: [0.22, 1, 0.36, 1],
+                }}
+                className={`inline-block ${i === titleWords.length - 1 ? "italic text-neutral-300" : "text-white"}`}
+              >
+                {word}
+                {i < titleWords.length - 1 && " "}
+              </motion.span>
+            </span>
+          ))}
+        </h1>
 
         {/* Subtitle */}
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.9, ease: [0.22, 1, 0.36, 1] }}
-          className="text-lg text-neutral-400 max-w-xl mx-auto leading-relaxed"
+          transition={{ duration: 1, delay: 1.4, ease: [0.22, 1, 0.36, 1] }}
+          className="text-base md:text-lg text-neutral-400 max-w-xl mx-auto leading-relaxed"
         >
-          A scrollytelling journey through the Cold War, Vietnam, and 9/11 — told by the son of a Navy fighter pilot who lived it all.
+          A scrollytelling journey through the Cold War, Vietnam, and 9/11 — told by the son
+          of a Navy fighter pilot who lived it all.
         </motion.p>
 
         {/* Subject bio card */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.9, delay: 1.2, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 1, delay: 1.7, ease: [0.22, 1, 0.36, 1] }}
           className="mx-auto max-w-2xl"
         >
           <div
-            className="rounded-2xl overflow-hidden"
+            className="relative rounded-2xl overflow-hidden"
             style={{
               background: "rgba(6, 8, 18, 0.78)",
-              backdropFilter: "blur(24px)",
-              WebkitBackdropFilter: "blur(24px)",
+              backdropFilter: "blur(28px)",
+              WebkitBackdropFilter: "blur(28px)",
               border: "1px solid rgba(74,144,217,0.25)",
-              boxShadow: "0 8px 48px rgba(0,0,0,0.5), inset 0 1px 0 rgba(74,144,217,0.1)",
+              boxShadow:
+                "0 16px 64px rgba(0,0,0,0.5), inset 0 1px 0 rgba(74,144,217,0.12)",
             }}
           >
+            {/* Top accent gradient */}
             <div
               className="h-0.5 w-full"
-              style={{ background: "linear-gradient(90deg, #4a90d9, #8e44ad, transparent)" }}
+              style={{
+                background: "linear-gradient(90deg, #4a90d9, #8e44ad, transparent)",
+              }}
             />
+            {/* Corner brackets */}
+            {[
+              { top: "8px", left: "8px", borderTop: 1, borderLeft: 1 },
+              { top: "8px", right: "8px", borderTop: 1, borderRight: 1 },
+              { bottom: "8px", left: "8px", borderBottom: 1, borderLeft: 1 },
+              { bottom: "8px", right: "8px", borderBottom: 1, borderRight: 1 },
+            ].map((pos, i) => (
+              <span
+                key={i}
+                className="absolute pointer-events-none"
+                style={{
+                  ...pos,
+                  width: 12,
+                  height: 12,
+                  borderColor: "rgba(74,144,217,0.5)",
+                  borderTopWidth: pos.borderTop ? 1 : 0,
+                  borderLeftWidth: pos.borderLeft ? 1 : 0,
+                  borderRightWidth: pos.borderRight ? 1 : 0,
+                  borderBottomWidth: pos.borderBottom ? 1 : 0,
+                  borderStyle: "solid",
+                }}
+              />
+            ))}
+
             <div className="px-6 py-5">
-              <p className="text-xs font-mono text-blue-400 tracking-[0.2em] uppercase mb-4">
-                Interview Subject
-              </p>
-              {/* Bio fields grid */}
+              <div className="flex items-center justify-between mb-4">
+                <p className="text-xs font-mono text-blue-400 tracking-[0.2em] uppercase">
+                  Interview Subject
+                </p>
+                <p className="text-[10px] font-mono text-neutral-600 tracking-widest">
+                  CLASSIFIED · DECLASSIFIED 2026
+                </p>
+              </div>
+
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-                {bioFields.map((f) => (
-                  <div key={f.label} className="text-left">
-                    <p className="text-xs font-mono text-neutral-600 uppercase tracking-widest mb-0.5">
+                {bioFields.map((f, idx) => (
+                  <motion.div
+                    key={f.label}
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 2 + idx * 0.08, duration: 0.5 }}
+                    className="text-left"
+                  >
+                    <p className="text-[10px] font-mono text-neutral-600 uppercase tracking-widest mb-1">
                       {f.label}
                     </p>
                     <p className="text-sm font-semibold text-white">{f.value}</p>
-                  </div>
+                  </motion.div>
                 ))}
               </div>
-              {/* Context sentence */}
+
               <p className="text-xs text-neutral-500 leading-relaxed text-left border-t border-white/5 pt-3">
                 {SUBJECT_BIO.context}
               </p>
@@ -137,15 +306,15 @@ export default function HeroSection() {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 2.2 }}
-          className="flex flex-col items-center gap-2 pt-4"
+          transition={{ delay: 2.5 }}
+          className="flex flex-col items-center gap-3 pt-4"
         >
-          <span className="text-xs font-mono text-neutral-600 tracking-widest uppercase">
+          <span className="text-[10px] font-mono text-neutral-600 tracking-[0.3em] uppercase">
             Scroll to begin
           </span>
           <motion.div
             animate={{ y: [0, 8, 0] }}
-            transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+            transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
             className="w-5 h-8 rounded-full border border-neutral-700 flex items-start justify-center pt-1.5"
           >
             <div className="w-1 h-2 rounded-full bg-blue-400" />
@@ -155,7 +324,7 @@ export default function HeroSection() {
 
       {/* Bottom fade */}
       <div
-        className="absolute bottom-0 left-0 right-0 h-32 pointer-events-none"
+        className="absolute bottom-0 left-0 right-0 h-40 pointer-events-none"
         style={{ background: "linear-gradient(transparent, #020408)" }}
       />
     </section>
