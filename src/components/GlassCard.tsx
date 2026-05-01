@@ -14,25 +14,16 @@ const containerVariants: Variants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: { staggerChildren: 0.1, delayChildren: 0.05 },
+    transition: { staggerChildren: 0.09, delayChildren: 0.05 },
   },
 };
 
 const itemVariants: Variants = {
-  hidden: { opacity: 0, y: 24 },
+  hidden: { opacity: 0, y: 18 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.6, ease: EASE },
-  },
-};
-
-const quoteVariants: Variants = {
-  hidden: { opacity: 0, x: -16 },
-  visible: {
-    opacity: 1,
-    x: 0,
-    transition: { duration: 0.75, ease: EASE, delay: 0.3 },
+    transition: { duration: 0.55, ease: EASE },
   },
 };
 
@@ -43,95 +34,80 @@ export default function GlassCard({ section, isActive }: GlassCardProps) {
       initial="hidden"
       animate={isActive ? "visible" : "hidden"}
       variants={containerVariants}
-      className="relative max-w-xl w-full"
+      className="relative w-full"
     >
       {/* Glow halo */}
       <div
-        className="absolute inset-0 rounded-2xl blur-md opacity-30 pointer-events-none"
-        style={{ background: `linear-gradient(135deg, ${section.accentColor}55, transparent 70%)` }}
+        className="absolute inset-0 rounded-2xl blur-md opacity-25 pointer-events-none"
+        style={{
+          background: `linear-gradient(135deg, ${section.accentColor}55, transparent 65%)`,
+        }}
       />
 
       <div
         className="relative rounded-2xl overflow-hidden"
         style={{
-          background: "rgba(6, 8, 18, 0.82)",
-          backdropFilter: "blur(24px)",
-          WebkitBackdropFilter: "blur(24px)",
-          border: `1px solid ${section.accentColor}2e`,
-          boxShadow: `0 12px 56px rgba(0,0,0,0.65), inset 0 1px 0 ${section.accentColor}1a`,
+          background: "rgba(6, 8, 18, 0.85)",
+          backdropFilter: "blur(28px)",
+          WebkitBackdropFilter: "blur(28px)",
+          border: `1px solid ${section.accentColor}2a`,
+          boxShadow: `0 16px 64px rgba(0,0,0,0.6), inset 0 1px 0 ${section.accentColor}18`,
         }}
       >
         {/* Accent top bar */}
         <motion.div
           variants={itemVariants}
           className="h-0.5 w-full"
-          style={{ background: `linear-gradient(90deg, ${section.accentColor}, transparent)` }}
+          style={{
+            background: `linear-gradient(90deg, ${section.accentColor}, ${section.accentColor}44, transparent)`,
+          }}
         />
 
-        <div className="p-6 md:p-8 space-y-4">
-          {/* Era + year badge row */}
-          <motion.div variants={itemVariants} className="flex items-center gap-3 flex-wrap">
-            <span
-              className="text-xs font-mono font-bold tracking-[0.18em] uppercase px-3 py-1 rounded-full"
-              style={{
-                color: section.accentColor,
-                background: `${section.accentColor}18`,
-                border: `1px solid ${section.accentColor}44`,
-              }}
-            >
-              {section.era}
-            </span>
-            <span className="text-xs font-mono text-neutral-500 tracking-widest">
-              {section.years}
-            </span>
+        <div className="p-6 md:p-7 space-y-5">
+          {/* Header row */}
+          <motion.div variants={itemVariants} className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <span
+                className="text-xs font-mono font-bold tracking-[0.18em] uppercase px-2.5 py-1 rounded-full"
+                style={{
+                  color: section.accentColor,
+                  background: `${section.accentColor}18`,
+                  border: `1px solid ${section.accentColor}44`,
+                }}
+              >
+                {section.era}
+              </span>
+            </div>
+            <span className="text-xs font-mono text-neutral-600">{section.years}</span>
           </motion.div>
 
-          {/* Title */}
-          <motion.h2
-            variants={itemVariants}
-            className="text-xl md:text-2xl font-bold leading-tight text-white"
-            style={{ fontFamily: "'Georgia', serif" }}
-          >
-            {section.title}
-          </motion.h2>
-
-          {/* Interview question */}
-          <motion.div
-            variants={itemVariants}
-            className="flex gap-2 items-start rounded-lg px-3 py-2"
-            style={{ background: `${section.accentColor}0d`, border: `1px solid ${section.accentColor}22` }}
-          >
-            <span className="text-xs mt-0.5 shrink-0" style={{ color: `${section.accentColor}99` }}>Q</span>
-            <p className="text-xs italic leading-relaxed" style={{ color: `${section.accentColor}bb` }}>
-              {section.interviewQuestion}
+          {/* Personal context */}
+          <motion.div variants={itemVariants} className="space-y-1">
+            <p className="text-xs font-mono uppercase tracking-widest" style={{ color: `${section.accentColor}77` }}>
+              Steve&apos;s Story
             </p>
+            <p className="text-sm text-neutral-400 leading-relaxed">{section.context}</p>
           </motion.div>
-
-          {/* Historical context */}
-          <motion.p variants={itemVariants} className="text-sm text-neutral-400 leading-relaxed">
-            {section.context}
-          </motion.p>
 
           {/* Divider */}
           <motion.div
             variants={itemVariants}
-            className="w-10 h-px"
-            style={{ background: `${section.accentColor}55` }}
+            className="h-px"
+            style={{ background: `linear-gradient(90deg, ${section.accentColor}44, transparent)` }}
           />
 
-          {/* Findings — scrollable when many */}
+          {/* Findings list */}
           <motion.div variants={containerVariants}>
             <motion.p
               variants={itemVariants}
-              className="text-xs font-mono uppercase tracking-widest mb-2"
-              style={{ color: `${section.accentColor}88` }}
+              className="text-xs font-mono uppercase tracking-widest mb-3"
+              style={{ color: `${section.accentColor}77` }}
             >
               Key Findings
             </motion.p>
             <motion.ul
               variants={containerVariants}
-              className="space-y-2.5 overflow-y-auto pr-1"
-              style={{ maxHeight: "28vh", scrollbarWidth: "thin", scrollbarColor: `${section.accentColor}44 transparent` }}
+              className="space-y-2.5"
             >
               {section.findings.map((finding, i) => (
                 <motion.li
@@ -148,20 +124,6 @@ export default function GlassCard({ section, isActive }: GlassCardProps) {
               ))}
             </motion.ul>
           </motion.div>
-
-          {/* Pull quote */}
-          {section.quote && (
-            <motion.blockquote
-              variants={quoteVariants}
-              className="pl-4 italic text-sm leading-relaxed"
-              style={{
-                color: section.accentColor,
-                borderLeft: `3px solid ${section.accentColor}55`,
-              }}
-            >
-              {section.quote}
-            </motion.blockquote>
-          )}
         </div>
       </div>
     </motion.div>

@@ -1,16 +1,15 @@
 "use client";
 
-import { useState, useCallback, useEffect, useRef } from "react";
+import { useState, useCallback, useEffect } from "react";
 import dynamic from "next/dynamic";
 import { STORY_SECTIONS } from "@/data/sections";
 import HeroSection from "@/components/HeroSection";
 import ScrollySection from "@/components/ScrollySection";
 import EpilogueSection from "@/components/EpilogueSection";
-import Navigation from "@/components/Navigation";
+import Header from "@/components/Header";
 import AudioPlayer from "@/components/AudioPlayer";
 import { useScrollProgress } from "@/hooks/useScrollProgress";
 
-// Dynamic import so Three.js only runs on the client
 const JetScene = dynamic(() => import("@/components/JetScene"), { ssr: false });
 
 export default function Home() {
@@ -36,59 +35,42 @@ export default function Home() {
 
   return (
     <main className="relative bg-[#020408] text-white min-h-screen">
-      <Navigation activeSection={activeSectionIndex} scrollProgress={scrollProgress} />
+      {/* ── Sticky header with full section nav ── */}
+      <Header activeSection={activeSectionIndex} scrollProgress={scrollProgress} />
+
+      {/* ── Audio player (bottom-right) ── */}
       <AudioPlayer />
 
-      {/* Hero */}
-      <HeroSection />
-
-      {/* Scrollytelling layout */}
-      <div className="relative">
-        {/* Sticky 3D canvas pinned to right half on desktop */}
-        <div
-          className="hidden md:block sticky top-0 h-screen w-1/2 ml-auto pointer-events-none"
-          style={{ marginTop: "-100vh", zIndex: 10 }}
-        >
-          <div
-            className="absolute inset-0 transition-all duration-1000 pointer-events-none"
-            style={{
-              background: `radial-gradient(ellipse 80% 80% at 50% 50%, ${currentSection.accentColor}12, transparent 70%)`,
-            }}
-          />
-          <JetScene
-            animState={currentSection.jetState}
-            accentColor={currentSection.accentColor}
-            hasModel={hasModel}
-          />
-        </div>
-
-        {/* Mobile: full-width fixed canvas behind content */}
-        <div
-          className="md:hidden fixed inset-0 pointer-events-none opacity-50"
-          style={{ zIndex: 0 }}
-        >
-          <JetScene
-            animState={currentSection.jetState}
-            accentColor={currentSection.accentColor}
-            hasModel={hasModel}
-          />
-        </div>
-
-        {/* Story sections */}
-        <div className="relative" style={{ zIndex: 20 }}>
-          {STORY_SECTIONS.map((section, i) => (
-            <ScrollySection
-              key={section.id}
-              section={section}
-              isActive={activeSectionIndex === i}
-              onBecomeActive={() => handleSectionActive(i)}
-            />
-          ))}
-        </div>
+      {/* ── Ambient 3D canvas — fixed background layer ── */}
+      <div
+        className="fixed inset-0 pointer-events-none"
+        style={{ zIndex: 0, opacity: 0.35 }}
+      >
+        <JetScene
+          animState={currentSection.jetState}
+          accentColor={currentSection.accentColor}
+          hasModel={hasModel}
+        />
       </div>
 
-      {/* Epilogue */}
-      <EpilogueSection />
+      {/* ── All scrollable content sits above the canvas ── */}
+      <div className="relative" style={{ zIndex: 10 }}>
+        {/* Hero */}
+        <HeroSection />
+
+        {/* Story sections */}
+        {STORY_SECTIONS.map((section, i) => (
+          <ScrollySection
+            key={section.id}
+            section={section}
+            isActive={activeSectionIndex === i}
+            onBecomeActive={() => handleSectionActive(i)}
+          />
+        ))}
+
+        {/* Epilogue */}
+        <EpilogueSection />
+      </div>
     </main>
   );
 }

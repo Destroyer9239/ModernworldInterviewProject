@@ -26,7 +26,7 @@ export default function HeroSection() {
   ];
 
   return (
-    <section className="relative flex flex-col items-center justify-center min-h-screen text-center px-6 overflow-hidden">
+    <section id="hero" className="relative flex flex-col items-center justify-center min-h-screen text-center px-6 pt-14 overflow-hidden">
       {/* Radial glow */}
       <div
         className="absolute inset-0 pointer-events-none"
