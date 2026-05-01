@@ -64,7 +64,7 @@ export default function EpilogueSection() {
         className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            "radial-gradient(ellipse 70% 50% at 50% 20%, rgba(241,196,15,0.04) 0%, transparent 60%)",
+            "radial-gradient(ellipse 70% 50% at 50% 20%, rgba(194,162,72,0.05) 0%, transparent 60%)",
         }}
       />
 
@@ -75,9 +75,9 @@ export default function EpilogueSection() {
             initial={{ opacity: 0 }}
             animate={inView ? { opacity: 1 } : {}}
             transition={{ duration: 0.8 }}
-            className="text-xs font-mono text-yellow-400 tracking-[0.3em] uppercase"
+            className="text-xs font-mono tracking-[0.3em] uppercase" style={{ color: "#c2a248" }}
           >
-            End of Transmission
+            Epilogue
           </motion.p>
           <motion.h2
             initial={{ opacity: 0, y: 30 }}
@@ -131,9 +131,9 @@ export default function EpilogueSection() {
                     <div
                       className="shrink-0 w-2 h-2 rounded-full -ml-1 mr-3 mt-0.5"
                       style={{
-                        background: item.year === "Sep 11, 2001" ? "#e67e22"
-                          : item.year === "Present" ? "#f1c40f"
-                          : item.year === "1967" ? "#4a90d9"
+                        background: item.year === "Sep 11, 2001" ? "#c47630"
+                          : item.year === "Present" ? "#c2a248"
+                          : item.year === "1967" ? "#6b96c4"
                           : "rgba(255,255,255,0.2)",
                       }}
                     />
@@ -160,10 +160,10 @@ export default function EpilogueSection() {
             style={{
               background: "rgba(6, 8, 18, 0.72)",
               backdropFilter: "blur(20px)",
-              border: "1px solid rgba(241,196,15,0.15)",
+              border: "1px solid rgba(194,162,72,0.18)",
             }}
           >
-            <div className="h-0.5 w-full" style={{ background: "linear-gradient(90deg, #f1c40f55, transparent)" }} />
+            <div className="h-0.5 w-full" style={{ background: "linear-gradient(90deg, rgba(194,162,72,0.4), transparent)" }} />
             <div className="p-6 md:p-8 space-y-3">
               {REFLECTION_POINTS.map((point, i) => (
                 <motion.div
@@ -173,7 +173,7 @@ export default function EpilogueSection() {
                   transition={{ duration: 0.55, delay: 0.1 + i * 0.1 }}
                   className="flex gap-3 text-sm text-neutral-400 leading-relaxed"
                 >
-                  <span className="mt-2 shrink-0 w-1 h-1 rounded-full bg-yellow-500/60" />
+                  <span className="mt-2 shrink-0 w-1 h-1 rounded-full" style={{ background: "rgba(194,162,72,0.7)" }} />
                   <span>{point}</span>
                 </motion.div>
               ))}

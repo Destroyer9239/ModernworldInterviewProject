@@ -57,8 +57,8 @@ export default function Header({ activeSection, scrollProgress }: HeaderProps) {
             onClick={scrollToHero}
             className="flex flex-col items-start leading-none gap-1 group relative"
           >
-            <span className="text-[9px] font-mono text-blue-400/70 tracking-[0.3em] uppercase">
-              Operational Log
+            <span className="text-[9px] font-mono tracking-[0.3em] uppercase" style={{ color: "rgba(107,150,196,0.7)" }}>
+              A Personal History
             </span>
             <div className="flex items-center gap-2">
               <span
@@ -74,7 +74,7 @@ export default function Header({ activeSection, scrollProgress }: HeaderProps) {
             </div>
             
             {/* Hover glow */}
-            <div className="absolute -inset-x-4 -inset-y-2 bg-blue-500/0 group-hover:bg-blue-500/5 rounded-lg transition-colors duration-300" />
+            <div className="absolute -inset-x-4 -inset-y-2 rounded-lg transition-colors duration-300" style={{ background: "transparent" }} />
           </button>
 
           {/* Enhanced Nav Buttons */}
@@ -122,18 +122,6 @@ export default function Header({ activeSection, scrollProgress }: HeaderProps) {
 
           {/* Right Metrics */}
           <div className="flex items-center gap-6">
-            <div className="hidden xl:flex flex-col items-end gap-1 font-mono">
-              <span className="text-[8px] text-neutral-600 uppercase tracking-tighter">Transmission Integrity</span>
-              <div className="flex gap-0.5">
-                {[...Array(5)].map((_, i) => (
-                  <div 
-                    key={i} 
-                    className={`w-3 h-1 rounded-full ${i < 4 ? 'bg-blue-500/40' : 'bg-neutral-800'}`} 
-                  />
-                ))}
-              </div>
-            </div>
-            
             <div className="flex items-center gap-3">
               <div className="flex flex-col items-end">
                 <span className="text-[10px] font-mono text-neutral-500 uppercase tracking-widest">Progress</span>
@@ -171,7 +159,7 @@ export default function Header({ activeSection, scrollProgress }: HeaderProps) {
               scaleX: scrollProgress,
               background: current
                 ? `linear-gradient(90deg, transparent, ${current.accentColor}, ${current.accentColor}88)`
-                : "linear-gradient(90deg, transparent, #4a90d9, #8e44ad)",
+                : "linear-gradient(90deg, transparent, #6b96c4, #9278b2)",
               transition: "background 0.8s ease",
             }}
           />

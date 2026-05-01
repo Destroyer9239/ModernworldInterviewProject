@@ -106,15 +106,15 @@ export default function GlassCard({ section, isActive }: GlassCardProps) {
             <motion.div variants={itemVariants} className="flex items-center gap-3">
               <div className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: section.accentColor }} />
               <span className="text-[10px] font-mono uppercase tracking-[0.4em] text-neutral-500">
-                Data Archive // {section.era}
+                Field Notes // {section.era}
               </span>
             </motion.div>
-            <motion.h3 
+            <motion.h3
               variants={itemVariants}
               className="text-2xl font-bold text-white tracking-tight"
               style={{ fontFamily: "var(--font-playfair)" }}
             >
-              Key Intelligence
+              Key Findings
             </motion.h3>
           </div>
 
@@ -122,7 +122,7 @@ export default function GlassCard({ section, isActive }: GlassCardProps) {
           <motion.div variants={itemVariants} className="space-y-3">
             <div className="flex items-center gap-2">
               <div className="h-px w-8" style={{ background: section.accentColor }} />
-              <p className="text-[9px] font-mono uppercase tracking-widest text-neutral-500">Narrative Context</p>
+              <p className="text-[9px] font-mono uppercase tracking-widest text-neutral-500">Context</p>
             </div>
             <p className="text-sm md:text-base text-neutral-300 leading-relaxed font-light italic">
               &quot;{section.context}&quot;
@@ -132,7 +132,7 @@ export default function GlassCard({ section, isActive }: GlassCardProps) {
           {/* Findings List */}
           <div className="space-y-4">
             <motion.p variants={itemVariants} className="text-[9px] font-mono uppercase tracking-[0.3em] text-neutral-500">
-              Extracted Insights
+              From the Interview
             </motion.p>
             <motion.ul className="space-y-4">
               {section.findings.map((finding, i) => (

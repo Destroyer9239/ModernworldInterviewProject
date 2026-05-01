@@ -27,7 +27,7 @@ export default function TimelineBar({
         className="absolute right-[5px] top-2 w-px origin-top"
         style={{
           height: `calc(${scrollProgress * 100}% - 16px)`,
-          background: `linear-gradient(180deg, #4a90d9, ${STORY_SECTIONS[activeSection]?.accentColor ?? "#4a90d9"})`,
+          background: `linear-gradient(180deg, #6b96c4, ${STORY_SECTIONS[activeSection]?.accentColor ?? "#6b96c4"})`,
           transition: "height 0.3s ease, background 0.6s ease",
         }}
       />

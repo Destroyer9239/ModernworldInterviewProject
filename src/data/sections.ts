@@ -59,7 +59,7 @@ export const STORY_SECTIONS: StorySection[] = [
       { value: '46 yrs', label: 'Duration of the Cold War' },
       { value: '~6', label: 'Age at parents\' divorce' },
     ],
-    accentColor: '#4a90d9',
+    accentColor: '#6b96c4',
     backgroundImage: '/images/cold-war.png',
     gradientFallback: 'linear-gradient(135deg, #0a1628 0%, #1a2a4a 40%, #0d1b2e 100%)',
     jetState: {
@@ -97,11 +97,11 @@ export const STORY_SECTIONS: StorySection[] = [
     quote: '"On the very first day, he came running back, was sent on patrol -- and was in the air."',
     stats: [
       { value: '1st', label: 'Strike of Vietnam War his father flew' },
-      { value: 'Aircraft', label: 'Carrier his father deployed from' },
-      { value: '0', label: '"Thank you for service" -- never said' },
+      { value: 'Carrier', label: "His father's deployment to Vietnam" },
+      { value: 'None', label: 'Recognition from the public back home' },
       { value: '58,000', label: 'American lives lost in Vietnam' },
     ],
-    accentColor: '#c0392b',
+    accentColor: '#b5604a',
     backgroundImage: '/images/vietnam.png',
     gradientFallback: 'linear-gradient(135deg, #1a2e0a 0%, #3d2b0a 40%, #1a0d0a 100%)',
     jetState: {
@@ -142,7 +142,7 @@ export const STORY_SECTIONS: StorySection[] = [
       { value: 'Duck/Cover', label: 'School drill -- and they knew it was useless' },
       { value: '1980s', label: 'Reagan rebuilds American confidence' },
     ],
-    accentColor: '#8e44ad',
+    accentColor: '#9278b2',
     backgroundImage: '/images/late-cold-war.png',
     gradientFallback: 'linear-gradient(135deg, #1a0d2e 0%, #2d1b4e 40%, #0d0a1a 100%)',
     jetState: {
@@ -184,7 +184,7 @@ export const STORY_SECTIONS: StorySection[] = [
       { value: 'Considered', label: 'Steve thought about enlisting' },
       { value: 'SNL', label: 'How he measured presidential weakness' },
     ],
-    accentColor: '#16a085',
+    accentColor: '#3e9b8c',
     backgroundImage: '/images/presidents.png',
     gradientFallback: 'linear-gradient(135deg, #0a1a1a 0%, #1a2e2a 40%, #0d1a1a 100%)',
     jetState: {
@@ -226,7 +226,7 @@ export const STORY_SECTIONS: StorySection[] = [
       { value: '100 hrs', label: 'Ground combat in Desert Storm' },
       { value: 'Bankrupt', label: 'What the Cold War did to the Soviet economy' },
     ],
-    accentColor: '#27ae60',
+    accentColor: '#4d9870',
     backgroundImage: '/images/post-cold-war.png',
     gradientFallback: 'linear-gradient(135deg, #0d1a12 0%, #1a2e20 40%, #0a140d 100%)',
     jetState: {
@@ -268,7 +268,7 @@ export const STORY_SECTIONS: StorySection[] = [
       { value: '5 days', label: 'No aircraft in U.S. skies after the attack' },
       { value: '4,500', label: 'Flights grounded on 9/11' },
     ],
-    accentColor: '#e67e22',
+    accentColor: '#c47630',
     backgroundImage: null,
     gradientFallback: 'linear-gradient(135deg, #1a1005 0%, #2e1f0a 30%, #0d0805 70%, #1a1208 100%)',
     jetState: {
@@ -310,7 +310,7 @@ export const STORY_SECTIONS: StorySection[] = [
       { value: '2 sides', label: 'A complete understanding on both sides' },
       { value: 'Now', label: 'The rift finally healed' },
     ],
-    accentColor: '#f1c40f',
+    accentColor: '#c2a248',
     backgroundImage: null,
     gradientFallback: 'linear-gradient(135deg, #1a1505 0%, #2e2510 30%, #1a1208 70%, #0d0a05 100%)',
     jetState: {

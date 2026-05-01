@@ -248,7 +248,9 @@ export default function JetScene({ animState, accentColor, hasModel }: JetSceneP
   return (
     <Canvas
       camera={{ position: [0, 0, animState.cameraZ], fov: animState.cameraFov }}
-      gl={{ antialias: true, alpha: true }}
+      gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
+      dpr={[1, 1.5]}
+      performance={{ min: 0.5 }}
       style={{ background: "transparent" }}
     >
       <CameraRig cameraZ={animState.cameraZ} fov={animState.cameraFov} />
@@ -259,7 +261,7 @@ export default function JetScene({ animState, accentColor, hasModel }: JetSceneP
       <directionalLight position={[-5, -2, -3]} intensity={0.4} color={accentColor} />
       <pointLight position={[0, 4, 2]} intensity={0.8} color={accentColor} />
 
-      <Stars radius={120} depth={60} count={3000} factor={5} saturation={0} fade speed={0.5} />
+      <Stars radius={120} depth={60} count={1500} factor={5} saturation={0} fade speed={0.5} />
 
       <Suspense fallback={null}>
         {hasModel ? (
@@ -269,7 +271,7 @@ export default function JetScene({ animState, accentColor, hasModel }: JetSceneP
         )}
         <Environment preset="night" />
         <EffectComposer>
-          <Bloom luminanceThreshold={0.1} mipmapBlur intensity={1.8} />
+          <Bloom luminanceThreshold={0.15} mipmapBlur intensity={1.3} />
           <Noise opacity={0.03} />
           <Vignette eskil={false} offset={0.05} darkness={1.2} />
         </EffectComposer>

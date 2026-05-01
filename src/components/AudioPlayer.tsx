@@ -132,7 +132,7 @@ export default function AudioPlayer() {
                     className="h-full rounded-full transition-all"
                     style={{
                       width: `${progress * 100}%`,
-                      background: "linear-gradient(90deg, #4a90d9, #8e44ad)",
+                      background: "linear-gradient(90deg, #6b96c4, #9278b2)",
                     }}
                   />
                 </div>
@@ -145,8 +145,8 @@ export default function AudioPlayer() {
                     onClick={hasAudio ? togglePlay : undefined}
                     className="flex items-center justify-center w-8 h-8 rounded-full transition-all"
                     style={{
-                      background: hasAudio ? "rgba(74,144,217,0.3)" : "rgba(255,255,255,0.05)",
-                      border: "1px solid rgba(74,144,217,0.5)",
+                      background: hasAudio ? "rgba(107,150,196,0.3)" : "rgba(255,255,255,0.05)",
+                      border: "1px solid rgba(107,150,196,0.5)",
                       cursor: hasAudio ? "pointer" : "not-allowed",
                     }}
                     aria-label={isPlaying ? "Pause" : "Play"}
@@ -176,7 +176,7 @@ export default function AudioPlayer() {
                   value={volume}
                   onChange={(e) => setVolume(parseFloat(e.target.value))}
                   className="w-full h-1 rounded-full appearance-none cursor-pointer"
-                  style={{ accentColor: "#4a90d9" }}
+                  style={{ accentColor: "#6b96c4" }}
                 />
               </div>
             </motion.div>
@@ -197,19 +197,19 @@ export default function AudioPlayer() {
             background: "rgba(8, 10, 20, 0.88)",
             backdropFilter: "blur(24px)",
             WebkitBackdropFilter: "blur(24px)",
-            border: "1px solid rgba(74,144,217,0.4)",
+            border: "1px solid rgba(107,150,196,0.4)",
             boxShadow: "0 4px 24px rgba(0,0,0,0.5)",
           }}
         >
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-            <circle cx="7" cy="7" r="6" stroke="#4a90d9" strokeWidth="1.5" />
+            <circle cx="7" cy="7" r="6" stroke="#6b96c4" strokeWidth="1.5" />
             {isPlaying ? (
               <>
-                <rect x="4.5" y="4" width="2" height="6" rx="0.5" fill="#4a90d9" />
-                <rect x="7.5" y="4" width="2" height="6" rx="0.5" fill="#4a90d9" />
+                <rect x="4.5" y="4" width="2" height="6" rx="0.5" fill="#6b96c4" />
+                <rect x="7.5" y="4" width="2" height="6" rx="0.5" fill="#6b96c4" />
               </>
             ) : (
-              <polygon points="5.5,4 10,7 5.5,10" fill="#4a90d9" />
+              <polygon points="5.5,4 10,7 5.5,10" fill="#6b96c4" />
             )}
           </svg>
           <span className="text-xs font-mono text-neutral-300 tracking-wider">
