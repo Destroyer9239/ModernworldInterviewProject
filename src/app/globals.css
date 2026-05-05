@@ -36,7 +36,10 @@ html {
 }
 
 body {
-  background: var(--bg);
+  background:
+    radial-gradient(ellipse 90% 50% at 15% 0%, rgba(184,92,56,0.05) 0%, transparent 55%),
+    radial-gradient(ellipse 70% 40% at 85% 100%, rgba(90,125,153,0.05) 0%, transparent 55%),
+    var(--bg);
   color: var(--ink);
   font-family: var(--font-inter), 'Helvetica Neue', Arial, sans-serif;
   font-feature-settings: "kern" 1, "liga" 1, "calt" 1;

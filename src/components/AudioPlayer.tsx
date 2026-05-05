@@ -137,7 +137,7 @@ export default function AudioPlayer() {
                   className="serif italic"
                   style={{ color: "var(--ink-soft)", fontSize: "14px" }}
                 >
-                  {hasAudio ? "Stephen Vance · in his own voice" : "No audio file found"}
+                  {hasAudio ? "Steve Simpson · in his own voice" : "No audio file found"}
                 </p>
 
                 {/* Progress */}

@@ -7,7 +7,7 @@ import { SUBJECT_BIO } from "@/data/sections";
 
 export default function HeroSection() {
   const ruleRef = useRef<HTMLDivElement>(null);
-  const titleWords = ["Carrier", "Born"];
+  const titleWords = ["The", "Pilot's", "Son"];
 
   useEffect(() => {
     if (ruleRef.current) {
