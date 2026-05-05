@@ -23,11 +23,11 @@ const cormorant = Cormorant_Garamond({
 });
 
 export const metadata: Metadata = {
-  title: "Carrier Born | Memories of the Modern World",
+  title: "Steve Simpson Interview ",
   description:
     "A 3D scrollytelling experience tracing the Cold War through the eyes of Stephen Vance, son of a Navy carrier pilot — from Vietnam to 9/11.",
   openGraph: {
-    title: "Carrier Born | Memories of the Modern World",
+    title: "Steve Simpson Interview ",
     description: "A scrollytelling journey through the Cold War, Vietnam, and 9/11.",
     type: "website",
   },
