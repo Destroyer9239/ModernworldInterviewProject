@@ -40,7 +40,7 @@ export default function Home() {
 
   return (
     <SmoothScroll>
-      <main className="relative bg-[#020408] text-white min-h-screen">
+      <main className="relative min-h-screen" style={{ background: "var(--bg)", color: "var(--ink)" }}>
         {/* Loading screen — covers everything until ready */}
         <LoadingScreen />
 
@@ -56,7 +56,7 @@ export default function Home() {
         {/* Ambient 3D canvas — fixed background layer */}
         <div
           className="fixed inset-0 pointer-events-none"
-          style={{ zIndex: 0, opacity: 0.32 }}
+          style={{ zIndex: 0, opacity: 0.18 }}
         >
           <JetScene
             animState={currentSection.jetState}

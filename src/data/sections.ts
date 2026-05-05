@@ -57,7 +57,7 @@ export const STORY_SECTIONS: StorySection[] = [
       { value: '46 yrs', label: 'Duration of the Cold War' },
       { value: '~6', label: 'Age at parents\' divorce' },
     ],
-    accentColor: '#4a90d9',
+    accentColor: '#5a7d99',
     jetState: {
       rotationX: 0,
       rotationY: 0.3,
@@ -97,7 +97,7 @@ export const STORY_SECTIONS: StorySection[] = [
       { value: '0', label: '"Thank you for service" -- never said' },
       { value: '58,000', label: 'American lives lost in Vietnam' },
     ],
-    accentColor: '#c0392b',
+    accentColor: '#a04539',
     jetState: {
       rotationX: 0.1,
       rotationY: -0.5,
@@ -136,7 +136,7 @@ export const STORY_SECTIONS: StorySection[] = [
       { value: 'Duck/Cover', label: 'School drill -- and they knew it was useless' },
       { value: '1980s', label: 'Reagan rebuilds American confidence' },
     ],
-    accentColor: '#8e44ad',
+    accentColor: '#6a5a89',
     jetState: {
       rotationX: -0.1,
       rotationY: 0.8,
@@ -176,7 +176,7 @@ export const STORY_SECTIONS: StorySection[] = [
       { value: 'Considered', label: 'Steve thought about enlisting' },
       { value: 'SNL', label: 'How he measured presidential weakness' },
     ],
-    accentColor: '#16a085',
+    accentColor: '#5a8674',
     jetState: {
       rotationX: 0.08,
       rotationY: 0.6,
@@ -216,7 +216,7 @@ export const STORY_SECTIONS: StorySection[] = [
       { value: '100 hrs', label: 'Ground combat in Desert Storm' },
       { value: 'Bankrupt', label: 'What the Cold War did to the Soviet economy' },
     ],
-    accentColor: '#27ae60',
+    accentColor: '#6e7a45',
     jetState: {
       rotationX: 0.05,
       rotationY: 1.2,
@@ -256,7 +256,7 @@ export const STORY_SECTIONS: StorySection[] = [
       { value: '~2 days', label: 'FAA civilian air travel shut down (Sept 11–13)' },
       { value: '~4,500', label: 'Flights grounded on 9/11' },
     ],
-    accentColor: '#e67e22',
+    accentColor: '#b5703f',
     jetState: {
       rotationX: -0.2,
       rotationY: -1.0,
@@ -296,7 +296,7 @@ export const STORY_SECTIONS: StorySection[] = [
       { value: '2 sides', label: 'A complete understanding on both sides' },
       { value: 'Now', label: 'The rift finally healed' },
     ],
-    accentColor: '#f1c40f',
+    accentColor: '#b5a04a',
     jetState: {
       rotationX: 0,
       rotationY: 0,

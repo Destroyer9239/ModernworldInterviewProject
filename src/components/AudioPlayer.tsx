@@ -30,7 +30,11 @@ export default function AudioPlayer() {
       }
     };
     const onLoaded = () => setDuration(audio.duration);
-    const onEnded = () => { setIsPlaying(false); setProgress(0); setCurrentTime(0); };
+    const onEnded = () => {
+      setIsPlaying(false);
+      setProgress(0);
+      setCurrentTime(0);
+    };
     audio.addEventListener("timeupdate", onTimeUpdate);
     audio.addEventListener("loadedmetadata", onLoaded);
     audio.addEventListener("ended", onEnded);
@@ -63,7 +67,7 @@ export default function AudioPlayer() {
     setProgress(x);
   };
 
-  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const onVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const v = parseFloat(e.target.value);
     setVolume(v);
     if (audioRef.current) audioRef.current.volume = v;
@@ -84,69 +88,68 @@ export default function AudioPlayer() {
         <AnimatePresence>
           {isExpanded && (
             <motion.div
-              initial={{ opacity: 0, y: 16, scale: 0.96 }}
+              initial={{ opacity: 0, y: 12, scale: 0.98 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 16, scale: 0.96 }}
+              exit={{ opacity: 0, y: 12, scale: 0.98 }}
               transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
-              className="mb-3 rounded-2xl overflow-hidden"
+              className="mb-3 overflow-hidden"
               style={{
-                background: "rgba(10, 14, 26, 0.97)",
+                background: "rgba(20, 21, 26, 0.98)",
                 backdropFilter: "blur(28px)",
                 WebkitBackdropFilter: "blur(28px)",
-                border: "1px solid rgba(74,144,217,0.35)",
-                boxShadow: "0 12px 56px rgba(0,0,0,0.8), 0 0 0 1px rgba(74,144,217,0.08)",
-                minWidth: 300,
+                border: "1px solid var(--rule-strong)",
+                boxShadow: "0 18px 60px rgba(0,0,0,0.55)",
+                minWidth: 320,
+                borderRadius: 4,
               }}
             >
-              {/* top accent */}
-              <div className="h-0.5 w-full" style={{ background: "linear-gradient(90deg, #4a90d9, #8e44ad 60%, transparent)" }} />
-
               <div className="p-5 space-y-4">
                 {/* Label */}
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2.5">
-                    <div
-                      className="w-1.5 h-1.5 rounded-full"
-                      style={{ background: isPlaying ? "#4a90d9" : "rgba(255,255,255,0.3)", boxShadow: isPlaying ? "0 0 6px #4a90d9" : "none" }}
-                    />
-                    <span className="text-xs font-mono text-white tracking-widest font-semibold">
-                      INTERVIEW AUDIO
-                    </span>
-                  </div>
-                  {hasAudio && duration > 0 && (
-                    <span className="text-[10px] font-mono text-neutral-500">
-                      {formatTime(duration)} total
-                    </span>
+                  <p className="kicker" style={{ color: "var(--accent)" }}>
+                    The Interview
+                  </p>
+                  {duration > 0 && (
+                    <p className="kicker tabular-nums" style={{ color: "var(--ink-mute)" }}>
+                      {formatTime(duration)}
+                    </p>
                   )}
                 </div>
 
-                <p className="text-xs text-neutral-400 -mt-1">
-                  {hasAudio ? "Steve Simpson · Navy Pilot's Son" : "No audio file found"}
+                <p
+                  className="serif italic"
+                  style={{ color: "var(--ink-soft)", fontSize: "14px" }}
+                >
+                  {hasAudio ? "Steve Simpson · in his own voice" : "No audio file found"}
                 </p>
 
-                {/* Progress bar */}
+                {/* Progress */}
                 <div
-                  className="w-full h-2 rounded-full cursor-pointer relative group"
-                  style={{ background: "rgba(255,255,255,0.1)" }}
+                  className="w-full h-1 cursor-pointer relative group"
+                  style={{ background: "var(--rule-strong)" }}
                   onClick={hasAudio ? seek : undefined}
                 >
                   <div
-                    className="h-full rounded-full transition-none"
+                    className="h-full"
                     style={{
                       width: `${progress * 100}%`,
-                      background: "linear-gradient(90deg, #4a90d9, #8e44ad)",
+                      background: "var(--ink)",
                     }}
                   />
-                  {/* Thumb */}
                   <div
-                    className="absolute top-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-white shadow-md opacity-0 group-hover:opacity-100 transition-opacity"
-                    style={{ left: `calc(${progress * 100}% - 6px)` }}
+                    className="absolute top-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                    style={{
+                      left: `calc(${progress * 100}% - 5px)`,
+                      background: "var(--accent)",
+                    }}
                   />
                 </div>
 
-                {/* Time + controls row */}
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-mono text-neutral-300 tabular-nums w-10">
+                <div className="flex items-center justify-between gap-4">
+                  <span
+                    className="kicker tabular-nums"
+                    style={{ color: "var(--ink-soft)", minWidth: "2.5rem" }}
+                  >
                     {formatTime(currentTime)}
                   </span>
 
@@ -154,89 +157,110 @@ export default function AudioPlayer() {
                     onClick={hasAudio ? togglePlay : undefined}
                     className="flex items-center justify-center w-10 h-10 rounded-full transition-all active:scale-95"
                     style={{
-                      background: hasAudio ? "rgba(74,144,217,0.25)" : "rgba(255,255,255,0.05)",
-                      border: "1px solid rgba(74,144,217,0.6)",
+                      background: hasAudio ? "var(--ink)" : "var(--rule)",
+                      color: "var(--bg)",
                       cursor: hasAudio ? "pointer" : "not-allowed",
-                      boxShadow: hasAudio ? "0 0 16px rgba(74,144,217,0.2)" : "none",
                     }}
                     aria-label={isPlaying ? "Pause" : "Play"}
                   >
                     {isPlaying ? (
-                      <svg width="13" height="13" viewBox="0 0 13 13" fill="white">
-                        <rect x="2" y="1.5" width="3.5" height="10" rx="1.5" />
-                        <rect x="7.5" y="1.5" width="3.5" height="10" rx="1.5" />
+                      <svg width="11" height="11" viewBox="0 0 11 11" fill="currentColor">
+                        <rect x="1.5" y="1" width="2.8" height="9" rx="0.5" />
+                        <rect x="6.7" y="1" width="2.8" height="9" rx="0.5" />
                       </svg>
                     ) : (
-                      <svg width="13" height="13" viewBox="0 0 13 13" fill="white" style={{ marginLeft: 1 }}>
-                        <polygon points="2.5,1.5 12,6.5 2.5,11.5" />
+                      <svg width="11" height="11" viewBox="0 0 11 11" fill="currentColor" style={{ marginLeft: 2 }}>
+                        <polygon points="2,1 10,5.5 2,10" />
                       </svg>
                     )}
                   </button>
 
-                  <span className="text-xs font-mono text-neutral-500 tabular-nums w-10 text-right">
+                  <span
+                    className="kicker tabular-nums text-right"
+                    style={{ color: "var(--ink-mute)", minWidth: "2.5rem" }}
+                  >
                     {duration > 0 ? formatTime(duration) : "--:--"}
                   </span>
                 </div>
 
                 {/* Volume */}
-                <div className="flex items-center gap-3">
-                  <svg width="12" height="12" viewBox="0 0 12 12" fill="rgba(255,255,255,0.4)">
-                    <path d="M1 4.5h2l3-3v9l-3-3H1V4.5z" />
-                    {volume > 0.5 && <path d="M8.5 2a5 5 0 0 1 0 8" stroke="rgba(255,255,255,0.4)" strokeWidth="1.2" fill="none" />}
-                    {volume > 0 && <path d="M7 3.8a2.8 2.8 0 0 1 0 4.4" stroke="rgba(255,255,255,0.4)" strokeWidth="1.2" fill="none" />}
-                  </svg>
+                <div
+                  className="flex items-center gap-3 pt-2"
+                  style={{ borderTop: "1px solid var(--rule)" }}
+                >
+                  <span className="kicker" style={{ color: "var(--ink-mute)" }}>
+                    Vol
+                  </span>
                   <input
                     type="range"
                     min={0}
                     max={1}
                     step={0.01}
                     value={volume}
-                    onChange={handleVolumeChange}
-                    className="flex-1 h-1.5 rounded-full cursor-pointer"
-                    style={{ accentColor: "#4a90d9" }}
+                    onChange={onVolumeChange}
+                    className="flex-1 cursor-pointer"
                   />
+                  <span
+                    className="kicker tabular-nums"
+                    style={{ color: "var(--ink-mute)", minWidth: "2rem", textAlign: "right" }}
+                  >
+                    {Math.round(volume * 100)}
+                  </span>
                 </div>
               </div>
             </motion.div>
           )}
         </AnimatePresence>
 
-        {/* Toggle pill button */}
+        {/* Toggle pill */}
         <motion.button
           onClick={() => setIsExpanded(!isExpanded)}
-          whileHover={{ scale: 1.04 }}
-          whileTap={{ scale: 0.96 }}
-          className="flex items-center gap-2.5 px-4 py-2.5 rounded-full"
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          className="flex items-center gap-3 px-4 py-2.5"
           style={{
-            background: "rgba(10, 14, 26, 0.95)",
-            backdropFilter: "blur(24px)",
-            WebkitBackdropFilter: "blur(24px)",
-            border: isExpanded ? "1px solid rgba(74,144,217,0.6)" : "1px solid rgba(74,144,217,0.35)",
-            boxShadow: "0 4px 24px rgba(0,0,0,0.6)",
+            background: "rgba(20, 21, 26, 0.97)",
+            backdropFilter: "blur(20px)",
+            WebkitBackdropFilter: "blur(20px)",
+            border: isExpanded
+              ? "1px solid var(--accent)"
+              : "1px solid var(--rule-strong)",
+            borderRadius: 4,
           }}
         >
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-            <circle cx="7" cy="7" r="6" stroke="#4a90d9" strokeWidth="1.5" />
+          {/* Mini play indicator */}
+          <span
+            className="flex items-center justify-center w-5 h-5 rounded-full"
+            style={{ background: isPlaying ? "var(--accent)" : "var(--ink)" }}
+          >
             {isPlaying ? (
-              <>
-                <rect x="4.5" y="4" width="1.8" height="6" rx="0.6" fill="#4a90d9" />
-                <rect x="7.7" y="4" width="1.8" height="6" rx="0.6" fill="#4a90d9" />
-              </>
+              <svg width="6" height="6" viewBox="0 0 6 6" fill="var(--bg)">
+                <rect x="0.5" y="0.5" width="1.5" height="5" rx="0.3" />
+                <rect x="4" y="0.5" width="1.5" height="5" rx="0.3" />
+              </svg>
             ) : (
-              <polygon points="5.5,4 10,7 5.5,10" fill="#4a90d9" />
+              <svg width="6" height="6" viewBox="0 0 6 6" fill="var(--bg)" style={{ marginLeft: 1 }}>
+                <polygon points="0.8,0.5 5.5,3 0.8,5.5" />
+              </svg>
             )}
-          </svg>
-          <span className="text-xs font-mono text-neutral-200 tracking-wider font-medium">
-            {hasAudio ? (isPlaying ? "PLAYING" : "INTERVIEW") : "AUDIO"}
+          </span>
+          <span className="kicker" style={{ color: "var(--ink)" }}>
+            {hasAudio ? (isPlaying ? "Now Playing" : "Listen") : "Audio"}
           </span>
           {isPlaying && (
-            <span className="flex gap-0.5 items-end h-3.5">
+            <span className="flex gap-[2px] items-end h-3">
               {[0, 1, 2].map((i) => (
                 <motion.span
                   key={i}
-                  className="w-0.5 rounded-full bg-blue-400"
+                  className="w-px"
+                  style={{ background: "var(--accent)" }}
                   animate={{ height: ["3px", "11px", "3px"] }}
-                  transition={{ duration: 0.65, repeat: Infinity, delay: i * 0.13, ease: "easeInOut" }}
+                  transition={{
+                    duration: 0.65,
+                    repeat: Infinity,
+                    delay: i * 0.13,
+                    ease: "easeInOut",
+                  }}
                 />
               ))}
             </span>

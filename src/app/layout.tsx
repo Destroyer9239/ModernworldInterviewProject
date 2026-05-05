@@ -43,9 +43,8 @@ export default function RootLayout({
       lang="en"
       className={`${inter.variable} ${jetbrains.variable} ${cormorant.variable} antialiased`}
     >
-      <body className="bg-[#020408] overflow-x-hidden">
-        {/* Vignette + film grain overlays - on top of everything */}
-        <div className="vignette" aria-hidden />
+      <body className="overflow-x-hidden" style={{ background: "var(--bg)" }}>
+        {/* Subtle film grain — barely visible, adds editorial texture */}
         <div className="film-grain" aria-hidden />
         {children}
       </body>
