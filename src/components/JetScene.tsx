@@ -3,6 +3,7 @@
 import { useRef, useEffect, Suspense, useMemo } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { useGLTF, Stars, Environment } from "@react-three/drei";
+import { EffectComposer, Bloom, Noise, Vignette } from "@react-three/postprocessing";
 import * as THREE from "three";
 import gsap from "gsap";
 
@@ -269,6 +270,11 @@ export default function JetScene({ animState, accentColor, hasModel }: JetSceneP
           <ProceduralJet animState={animState} accentColor={accentColor} />
         )}
         <Environment preset="night" />
+        <EffectComposer>
+          <Bloom luminanceThreshold={0.15} mipmapBlur intensity={1.3} />
+          <Noise opacity={0.03} />
+          <Vignette eskil={false} offset={0.05} darkness={1.2} />
+        </EffectComposer>
       </Suspense>
     </Canvas>
   );
