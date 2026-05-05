@@ -2,7 +2,7 @@
 
 import { useRef, useEffect, Suspense, useMemo } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { useGLTF, Stars, Environment } from "@react-three/drei";
+import { useGLTF, Environment } from "@react-three/drei";
 import { EffectComposer, Bloom, Noise, Vignette } from "@react-three/postprocessing";
 import * as THREE from "three";
 import gsap from "gsap";
@@ -256,12 +256,10 @@ export default function JetScene({ animState, accentColor, hasModel }: JetSceneP
       <CameraRig cameraZ={animState.cameraZ} fov={animState.cameraFov} />
       <MouseParallax />
 
-      <ambientLight intensity={0.3} />
-      <directionalLight position={[5, 8, 5]} intensity={1.2} color="#ffffff" castShadow />
+      <ambientLight intensity={0.6} />
+      <directionalLight position={[5, 8, 5]} intensity={1.8} color="#ffffff" castShadow />
       <directionalLight position={[-5, -2, -3]} intensity={0.4} color={accentColor} />
       <pointLight position={[0, 4, 2]} intensity={0.8} color={accentColor} />
-
-      <Stars radius={120} depth={60} count={1500} factor={5} saturation={0} fade speed={0.5} />
 
       <Suspense fallback={null}>
         {hasModel ? (

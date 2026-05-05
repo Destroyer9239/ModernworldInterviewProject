@@ -91,11 +91,8 @@ export default function ScrollySection({ section, onBecomeActive }: ScrollySecti
       </header>
 
       {/* ─────── ARTICLE BODY ─────── */}
-      <article className="px-6 md:px-12 lg:px-20 pb-20 md:pb-28 max-w-6xl mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-12 lg:gap-20">
-
-          {/* MAIN COLUMN */}
-          <div className="min-w-0 space-y-12">
+      <article className="px-6 md:px-12 lg:px-20 pb-20 md:pb-28 max-w-4xl mx-auto">
+        <div className="space-y-12">
 
             {/* Interviewer's question — editorial intro */}
             <motion.div
@@ -211,73 +208,6 @@ export default function ScrollySection({ section, onBecomeActive }: ScrollySecti
                 ))}
               </ol>
             </motion.div>
-          </div>
-
-          {/* SIDEBAR */}
-          <aside className="space-y-10 lg:sticky lg:top-24 lg:self-start lg:pt-2">
-            {/* Historical note */}
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={bodyInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.7, delay: 0.2 }}
-              className="pt-5"
-              style={{ borderTop: `1px solid var(--rule-strong)` }}
-            >
-              <p className="kicker mb-4" style={{ color: section.accentColor }}>
-                Historical note
-              </p>
-              <p
-                style={{
-                  color: "var(--ink-soft)",
-                  fontSize: "14px",
-                  lineHeight: 1.7,
-                }}
-              >
-                {section.historicalFact}
-              </p>
-            </motion.div>
-
-            {/* Stats — inline data, not boxed cards */}
-            <motion.dl
-              initial={{ opacity: 0, y: 16 }}
-              animate={bodyInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.7, delay: 0.35 }}
-              className="space-y-5 pt-5"
-              style={{ borderTop: `1px solid var(--rule-strong)` }}
-            >
-              <p className="kicker" style={{ color: section.accentColor }}>
-                By the numbers
-              </p>
-              {section.stats.map((stat) => (
-                <div
-                  key={stat.label}
-                  className="grid grid-cols-1 gap-1 pb-4"
-                  style={{ borderBottom: "1px solid var(--rule)" }}
-                >
-                  <dt
-                    className="serif"
-                    style={{
-                      fontSize: "1.6rem",
-                      lineHeight: 1.1,
-                      color: "var(--ink)",
-                      fontWeight: 500,
-                    }}
-                  >
-                    {stat.value}
-                  </dt>
-                  <dd
-                    style={{
-                      color: "var(--ink-mute)",
-                      fontSize: "13px",
-                      lineHeight: 1.4,
-                    }}
-                  >
-                    {stat.label}
-                  </dd>
-                </div>
-              ))}
-            </motion.dl>
-          </aside>
         </div>
       </article>
     </section>

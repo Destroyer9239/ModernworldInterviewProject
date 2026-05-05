@@ -94,11 +94,11 @@ export default function AudioPlayer() {
               transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
               className="mb-3 overflow-hidden"
               style={{
-                background: "rgba(20, 21, 26, 0.98)",
+                background: "rgba(247,243,238,0.98)",
                 backdropFilter: "blur(28px)",
                 WebkitBackdropFilter: "blur(28px)",
                 border: "1px solid var(--rule-strong)",
-                boxShadow: "0 18px 60px rgba(0,0,0,0.55)",
+                boxShadow: "0 8px 40px rgba(26,23,20,0.14)",
                 minWidth: 320,
                 borderRadius: 4,
               }}
@@ -219,7 +219,7 @@ export default function AudioPlayer() {
           whileTap={{ scale: 0.98 }}
           className="flex items-center gap-3 px-4 py-2.5"
           style={{
-            background: "rgba(20, 21, 26, 0.97)",
+            background: "rgba(247,243,238,0.97)",
             backdropFilter: "blur(20px)",
             WebkitBackdropFilter: "blur(20px)",
             border: isExpanded

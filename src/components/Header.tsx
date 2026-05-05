@@ -37,7 +37,7 @@ export default function Header({ activeSection, scrollProgress }: HeaderProps) {
         transition={{ duration: 0.8, delay: 0.4 }}
         className="fixed top-0 left-0 right-0 z-50"
         style={{
-          background: scrolled ? "rgba(12,13,17,0.92)" : "rgba(12,13,17,0.4)",
+          background: scrolled ? "rgba(247,243,238,0.96)" : "rgba(247,243,238,0.6)",
           backdropFilter: "blur(14px) saturate(150%)",
           WebkitBackdropFilter: "blur(14px) saturate(150%)",
           borderBottom: scrolled
@@ -144,7 +144,7 @@ export default function Header({ activeSection, scrollProgress }: HeaderProps) {
             transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
             className="fixed top-16 left-0 right-0 z-40"
             style={{
-              background: "rgba(12,13,17,0.98)",
+              background: "rgba(247,243,238,0.98)",
               backdropFilter: "blur(20px)",
               borderBottom: "1px solid var(--rule-strong)",
             }}
