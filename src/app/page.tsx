@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import { STORY_SECTIONS } from "@/data/sections";
 import HeroSection from "@/components/HeroSection";
@@ -18,13 +18,8 @@ import { useScrollProgress } from "@/hooks/useScrollProgress";
 const JetScene = dynamic(() => import("@/components/JetScene"), { ssr: false });
 
 export default function Home() {
-  const [activeSectionIndex, setActiveSectionIndex] = useState(0);
   const [hasModel, setHasModel] = useState(false);
   const { activeSection, scrollProgress } = useScrollProgress(STORY_SECTIONS.length);
-
-  useEffect(() => {
-    setActiveSectionIndex(activeSection);
-  }, [activeSection]);
 
   useEffect(() => {
     fetch("/models/jet.glb", { method: "HEAD" })
@@ -32,25 +27,14 @@ export default function Home() {
       .catch(() => setHasModel(false));
   }, []);
 
-  const handleSectionActive = useCallback((index: number) => {
-    setActiveSectionIndex(index);
-  }, []);
-
-  const currentSection = STORY_SECTIONS[activeSectionIndex] ?? STORY_SECTIONS[0];
+  const currentSection = STORY_SECTIONS[activeSection] ?? STORY_SECTIONS[0];
 
   return (
     <SmoothScroll>
       <main className="relative min-h-screen" style={{ background: "var(--bg)", color: "var(--ink)" }}>
-        {/* Loading screen — covers everything until ready */}
         <LoadingScreen />
-
-        {/* Custom cursor (desktop only) */}
         <CustomCursor />
-
-        {/* Sticky header with section nav */}
-        <Header activeSection={activeSectionIndex} scrollProgress={scrollProgress} />
-
-        {/* Audio player */}
+        <Header activeSection={activeSection} scrollProgress={scrollProgress} />
         <AudioPlayer />
 
         {/* Ambient 3D canvas — fixed background layer */}
@@ -65,28 +49,20 @@ export default function Home() {
           />
         </div>
 
-        {/* All scrollable content */}
         <div className="relative" style={{ zIndex: 10 }}>
-          {/* Hero with starfield + bio */}
           <HeroSection />
-
-          {/* Chapter index / table of contents */}
           <ChapterIndex />
 
-          {/* Story sections */}
           {STORY_SECTIONS.map((section, i) => (
             <ScrollySection
               key={section.id}
               section={section}
-              isActive={activeSectionIndex === i}
-              onBecomeActive={() => handleSectionActive(i)}
+              isActive={activeSection === i}
+              onBecomeActive={() => {}}
             />
           ))}
 
-          {/* Epilogue */}
           <EpilogueSection />
-
-          {/* Footer */}
           <Footer />
         </div>
       </main>
