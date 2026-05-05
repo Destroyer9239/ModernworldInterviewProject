@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { motion, AnimatePresence, useScroll, useMotionValueEvent } from "framer-motion";
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { STORY_SECTIONS } from "@/data/sections";
 
 interface HeaderProps {
@@ -12,18 +12,15 @@ interface HeaderProps {
 export default function Header({ activeSection, scrollProgress }: HeaderProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  
-  const { scrollY } = useScroll();
 
-  useMotionValueEvent(scrollY, "change", (latest) => {
-    setScrolled(latest > 80);
-  });
-
-  const progressPercent = Math.round(scrollProgress * 100);
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 80);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   const scrollTo = (id: string) => {
-    const el = document.getElementById(id);
-    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+    document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
     setMenuOpen(false);
   };
 
@@ -32,178 +29,168 @@ export default function Header({ activeSection, scrollProgress }: HeaderProps) {
     setMenuOpen(false);
   };
 
-  const current = STORY_SECTIONS[activeSection];
-
   return (
     <>
       <motion.header
-        initial={{ opacity: 0, y: -20 }}
+        initial={{ opacity: 0, y: -16 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 0.5 }}
+        transition={{ duration: 0.8, delay: 0.4 }}
         className="fixed top-0 left-0 right-0 z-50"
         style={{
-          background: scrolled
-            ? "rgba(2, 4, 8, 0.95)"
-            : "rgba(2, 4, 8, 0.4)",
-          backdropFilter: "blur(24px)",
-          WebkitBackdropFilter: "blur(24px)",
-          borderBottom: "1px solid rgba(255,255,255,0.06)",
-          transition: "background 0.5s ease",
+          background: scrolled ? "rgba(12,13,17,0.92)" : "rgba(12,13,17,0.4)",
+          backdropFilter: "blur(14px) saturate(150%)",
+          WebkitBackdropFilter: "blur(14px) saturate(150%)",
+          borderBottom: scrolled
+            ? "1px solid var(--rule-strong)"
+            : "1px solid transparent",
+          transition: "background 0.4s ease, border-color 0.4s ease",
         }}
       >
-        <div className="flex items-center justify-between px-5 md:px-10 h-16">
-          {/* Logo Section */}
+        <div className="flex items-center justify-between px-6 md:px-10 h-16">
+          {/* Wordmark */}
           <button
             onClick={scrollToHero}
-            className="flex flex-col items-start leading-none gap-1 group relative"
+            className="flex items-baseline gap-3 group"
           >
-            <span className="text-[9px] font-mono tracking-[0.3em] uppercase" style={{ color: "rgba(107,150,196,0.7)" }}>
-              A Personal History
+            <span
+              className="serif italic"
+              style={{
+                fontSize: "20px",
+                color: "var(--ink)",
+                lineHeight: 1,
+                fontWeight: 500,
+              }}
+            >
+              The Pilot&apos;s Son
             </span>
-            <div className="flex items-center gap-2">
-              <span
-                className="text-lg font-bold text-white tracking-tight"
-                style={{ fontFamily: "var(--font-playfair)" }}
-              >
-                The Pilot&apos;s Son
-              </span>
-              <div className="h-4 w-px bg-white/10 hidden md:block" />
-              <span className="hidden md:block text-[10px] font-mono text-neutral-500 uppercase tracking-widest pt-0.5">
-                {current?.era || "Introduction"}
-              </span>
-            </div>
-            
-            {/* Hover glow */}
-            <div className="absolute -inset-x-4 -inset-y-2 rounded-lg transition-colors duration-300" style={{ background: "transparent" }} />
+            <span className="hidden md:block kicker" style={{ color: "var(--ink-mute)" }}>
+              An Oral History
+            </span>
           </button>
 
-          {/* Enhanced Nav Buttons */}
-          <nav className="hidden lg:flex items-center gap-2">
-            {STORY_SECTIONS.map((s, i) => (
-              <button
-                key={s.id}
-                onClick={() => scrollTo(s.id)}
-                className="group relative px-4 py-2 rounded-md transition-all duration-300"
-              >
-                <span 
-                  className="relative z-10 text-[11px] font-mono uppercase tracking-widest transition-colors duration-300"
-                  style={{
-                    color: activeSection === i ? s.accentColor : "rgba(255,255,255,0.4)",
-                  }}
+          {/* Center — section name (desktop) */}
+          <div className="hidden md:flex items-center gap-2 absolute left-1/2 -translate-x-1/2">
+            <AnimatePresence mode="wait">
+              {scrolled && STORY_SECTIONS[activeSection] && (
+                <motion.span
+                  key={STORY_SECTIONS[activeSection].id}
+                  initial={{ opacity: 0, y: 4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -4 }}
+                  transition={{ duration: 0.3 }}
+                  className="kicker tabular-nums"
+                  style={{ color: "var(--ink-mute)" }}
                 >
-                  {s.shortTitle}
-                </span>
-                
-                {/* Background pill */}
-                <motion.div 
-                  className="absolute inset-0 rounded-md opacity-0 group-hover:opacity-100 transition-opacity"
-                  style={{ 
-                    background: `${s.accentColor}10`,
-                    border: `1px solid ${s.accentColor}20` 
-                  }}
-                />
-                
-                {/* Active indicator */}
-                {activeSection === i && (
-                  <motion.div
-                    layoutId="header-active-pill"
-                    className="absolute inset-0 rounded-md z-0 shadow-[0_0_20px_rgba(0,0,0,0.5)]"
-                    style={{ 
-                      background: "rgba(255,255,255,0.03)",
-                      border: `1px solid ${s.accentColor}50`,
-                      boxShadow: `inset 0 0 10px ${s.accentColor}10`
-                    }}
-                    transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-                  />
-                )}
-              </button>
-            ))}
-          </nav>
+                  Ch. {String(activeSection + 1).padStart(2, "0")}
+                  <span className="mx-2" style={{ color: "var(--ink-faint)" }}>·</span>
+                  <span style={{ color: "var(--ink-soft)" }}>
+                    {STORY_SECTIONS[activeSection].title}
+                  </span>
+                </motion.span>
+              )}
+            </AnimatePresence>
+          </div>
 
-          {/* Right Metrics */}
-          <div className="flex items-center gap-6">
-            <div className="flex items-center gap-3">
-              <div className="flex flex-col items-end">
-                <span className="text-[10px] font-mono text-neutral-500 uppercase tracking-widest">Progress</span>
-                <span className="text-sm font-mono text-white font-bold">{progressPercent}%</span>
-              </div>
-              
-              {/* Mobile hamburger */}
-              <button
-                onClick={() => setMenuOpen(!menuOpen)}
-                className="lg:hidden flex flex-col gap-1.5 p-2 bg-white/5 rounded-lg border border-white/10 hover:bg-white/10 transition-colors"
-                aria-label="Toggle menu"
-              >
-                {[0, 1].map((i) => (
-                  <motion.span
-                    key={i}
-                    className="block h-0.5 rounded-full bg-white/80"
-                    animate={{
-                      width: "18px",
-                      rotate: menuOpen && i === 0 ? 45 : menuOpen && i === 1 ? -45 : 0,
-                      y: menuOpen && i === 0 ? 4 : menuOpen && i === 1 ? -4 : 0,
-                    }}
-                    transition={{ duration: 0.2 }}
-                  />
-                ))}
-              </button>
-            </div>
+          {/* Right — progress + menu */}
+          <div className="flex items-center gap-5">
+            <span
+              className="hidden md:inline-block kicker tabular-nums"
+              style={{ color: "var(--ink-mute)" }}
+            >
+              {Math.round(scrollProgress * 100).toString().padStart(2, "0")}%
+            </span>
+            <button
+              onClick={() => setMenuOpen(!menuOpen)}
+              className="flex flex-col gap-[5px] p-1"
+              aria-label="Toggle menu"
+            >
+              {[0, 1].map((i) => (
+                <motion.span
+                  key={i}
+                  className="block h-px rounded-full"
+                  style={{ background: "var(--ink)" }}
+                  animate={{
+                    width: "22px",
+                    rotate: menuOpen && i === 0 ? 45 : menuOpen && i === 1 ? -45 : 0,
+                    y: menuOpen && i === 0 ? 3 : menuOpen && i === 1 ? -3 : 0,
+                  }}
+                  transition={{ duration: 0.25 }}
+                />
+              ))}
+            </button>
           </div>
         </div>
 
-        {/* Dynamic Progress line */}
-        <div className="h-0.5 w-full bg-white/5">
+        {/* Hairline progress */}
+        <div className="h-px w-full" style={{ background: "var(--rule)" }}>
           <motion.div
-            className="h-full origin-left"
+            className="h-full"
             style={{
-              scaleX: scrollProgress,
-              background: current
-                ? `linear-gradient(90deg, transparent, ${current.accentColor}, ${current.accentColor}88)`
-                : "linear-gradient(90deg, transparent, #6b96c4, #9278b2)",
-              transition: "background 0.8s ease",
+              width: `${scrollProgress * 100}%`,
+              background: "var(--accent)",
+              transition: "width 0.1s linear",
             }}
           />
         </div>
       </motion.header>
 
-      {/* Mobile slide-down menu */}
+      {/* Slide-down menu */}
       <AnimatePresence>
         {menuOpen && (
           <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            className="fixed top-16 left-0 right-0 z-40 lg:hidden overflow-hidden"
+            initial={{ opacity: 0, y: -12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -12 }}
+            transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+            className="fixed top-16 left-0 right-0 z-40"
             style={{
-              background: "rgba(4, 6, 14, 0.98)",
-              backdropFilter: "blur(32px)",
-              borderBottom: "1px solid rgba(255,255,255,0.1)",
+              background: "rgba(12,13,17,0.98)",
+              backdropFilter: "blur(20px)",
+              borderBottom: "1px solid var(--rule-strong)",
             }}
           >
-            <div className="p-4 space-y-1">
+            <div className="max-w-5xl mx-auto px-6 md:px-10 py-8">
+              <p className="kicker mb-6" style={{ color: "var(--accent)" }}>
+                Contents
+              </p>
               <button
                 onClick={scrollToHero}
-                className="w-full text-left px-4 py-3 text-[11px] font-mono uppercase tracking-[0.2em] text-neutral-500 hover:text-white transition-colors"
+                className="block w-full text-left py-3 transition-colors"
+                style={{ color: "var(--ink-soft)", borderBottom: "1px solid var(--rule)" }}
               >
-                00. Introduction
+                <span className="serif italic" style={{ fontSize: "18px" }}>
+                  Introduction
+                </span>
               </button>
               {STORY_SECTIONS.map((s, i) => (
                 <button
                   key={s.id}
                   onClick={() => scrollTo(s.id)}
-                  className="w-full group flex items-center justify-between px-4 py-4 rounded-xl border border-transparent hover:border-white/10 hover:bg-white/5 transition-all"
-                  style={{
-                    color: activeSection === i ? s.accentColor : "rgba(255,255,255,0.7)",
-                  }}
+                  className="grid grid-cols-[3rem_1fr_auto] gap-5 items-baseline w-full text-left py-4 group transition-colors"
+                  style={{ borderBottom: "1px solid var(--rule)" }}
                 >
-                  <div className="flex flex-col items-start gap-1">
-                    <span className="text-[10px] font-mono opacity-50 uppercase tracking-widest">{s.era}</span>
-                    <span className="text-sm font-semibold tracking-wide">{s.title}</span>
-                  </div>
-                  <div 
-                    className="w-1.5 h-1.5 rounded-full" 
-                    style={{ background: activeSection === i ? s.accentColor : "transparent", boxShadow: activeSection === i ? `0 0 10px ${s.accentColor}` : 'none' }} 
-                  />
+                  <span
+                    className="serif tabular-nums"
+                    style={{
+                      fontSize: "18px",
+                      color: activeSection === i ? s.accentColor : "var(--ink-mute)",
+                    }}
+                  >
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <span
+                    className="serif"
+                    style={{
+                      fontSize: "20px",
+                      color: activeSection === i ? "var(--ink)" : "var(--ink-soft)",
+                      fontStyle: activeSection === i ? "italic" : "normal",
+                    }}
+                  >
+                    {s.title}
+                  </span>
+                  <span className="kicker hidden md:block" style={{ color: "var(--ink-mute)" }}>
+                    {s.years}
+                  </span>
                 </button>
               ))}
             </div>

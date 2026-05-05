@@ -1,169 +1,142 @@
 "use client";
 
-import { useRef, useEffect } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { useEffect, useRef } from "react";
+import { motion } from "framer-motion";
 import gsap from "gsap";
 import { SUBJECT_BIO } from "@/data/sections";
 
 export default function HeroSection() {
-  const lineRef = useRef<HTMLDivElement>(null);
-  const heroRef = useRef<HTMLElement>(null);
-
-  const { scrollYProgress } = useScroll({
-    target: heroRef,
-    offset: ["start start", "end start"],
-  });
-
-  // Parallax: image drifts up as user scrolls down
-  const imageY = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
-  const imageScale = useTransform(scrollYProgress, [0, 0.5, 1], [1.1, 1.15, 1.3]);
-  const contentOpacity = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
-  const contentY = useTransform(scrollYProgress, [0, 0.6], [0, -60]);
-
-  // 3D perspective transforms
-  const heroRotateX = useTransform(scrollYProgress, [0, 0.5, 1], [0, 3, 8]);
-  const heroTranslateZ = useTransform(scrollYProgress, [0, 1], [0, -120]);
+  const ruleRef = useRef<HTMLDivElement>(null);
+  const titleWords = ["The", "Pilot's", "Son"];
 
   useEffect(() => {
-    if (lineRef.current) {
+    if (ruleRef.current) {
       gsap.fromTo(
-        lineRef.current,
+        ruleRef.current,
         { scaleX: 0 },
         { scaleX: 1, duration: 1.4, delay: 0.5, ease: "power3.inOut" }
       );
     }
   }, []);
 
-  const bioFields = [
-    { label: "Subject", value: SUBJECT_BIO.name },
-    { label: "Born", value: SUBJECT_BIO.dob },
-    { label: "Location", value: SUBJECT_BIO.location },
-    { label: "Connection", value: SUBJECT_BIO.connection },
-  ];
-
   return (
     <section
       id="hero"
-      ref={heroRef}
-      className="relative flex flex-col items-center justify-center min-h-screen text-center px-6 pt-14 overflow-hidden"
-      style={{ perspective: "1200px", perspectiveOrigin: "50% 50%" }}
+      className="relative flex flex-col items-center justify-center min-h-screen text-center px-6 pt-24 pb-20 overflow-hidden"
     >
-      {/* ── 3D Parallax background image ── */}
-      <motion.div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          y: imageY,
-          scale: imageScale,
-          rotateX: heroRotateX,
-          translateZ: heroTranslateZ,
-          willChange: "transform",
-          transformOrigin: "50% 60%",
-        }}
-      >
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage: "url(/images/hero.png)",
-            backgroundSize: "cover",
-            backgroundPosition: "center 40%",
-            top: "-10%",
-            bottom: "-10%",
-            height: "120%",
-          }}
-        />
-      </motion.div>
-
-      {/* Dark overlay for readability */}
+      {/* Soft warm halo behind the title — replaces the starfield */}
       <div
+        aria-hidden
         className="absolute inset-0 pointer-events-none"
         style={{
-          background: "linear-gradient(180deg, rgba(2,4,8,0.7) 0%, rgba(2,4,8,0.5) 40%, rgba(2,4,8,0.85) 100%)",
+          background:
+            "radial-gradient(ellipse 70% 50% at 50% 38%, rgba(200,112,76,0.08) 0%, transparent 65%)",
         }}
       />
 
-      {/* Subtle vignette */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background: "radial-gradient(ellipse 90% 90% at 50% 50%, transparent 0%, rgba(2,4,8,0.9) 100%)",
-        }}
-      />
+      <div className="relative z-10 w-full max-w-3xl">
+        {/* Issue / dateline ribbon */}
+        <motion.div
+          initial={{ opacity: 0, y: -8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          className="flex items-center justify-center gap-3 mb-10"
+        >
+          <span className="kicker" style={{ color: "var(--accent)" }}>
+            Issue 01
+          </span>
+          <span className="w-8 h-px" style={{ background: "var(--rule-strong)" }} />
+          <span className="kicker">An Oral History</span>
+          <span className="w-8 h-px" style={{ background: "var(--rule-strong)" }} />
+          <span className="kicker">2026</span>
+        </motion.div>
 
-      {/* ── Content (fades on scroll) ── */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 1.5 }}
-        className="relative z-10 w-full max-w-4xl space-y-6"
-        style={{ opacity: contentOpacity, y: contentY }}
-      >
         {/* Eyebrow */}
         <motion.p
-          initial={{ opacity: 0, letterSpacing: "0.5em" }}
-          animate={{ opacity: 1, letterSpacing: "0.2em" }}
-          transition={{ duration: 1.5, delay: 0.3, ease: "easeOut" }}
-          className="text-[10px] font-mono text-neutral-400 uppercase tracking-[0.2em]"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1, delay: 0.4 }}
+          className="serif italic text-base md:text-lg mb-6"
+          style={{ color: "var(--ink-soft)" }}
         >
           Memories of the Modern World
         </motion.p>
 
-        {/* Minimalist rule */}
+        {/* Display title */}
+        <h1
+          className="serif font-semibold leading-[0.95] tracking-tight"
+          style={{
+            fontSize: "clamp(3.5rem, 11vw, 8.5rem)",
+            color: "var(--ink)",
+          }}
+        >
+          {titleWords.map((word, i) => (
+            <span
+              key={i}
+              className="inline-block overflow-hidden align-baseline"
+              style={{ paddingBottom: "0.06em", lineHeight: "1" }}
+            >
+              <motion.span
+                initial={{ y: "110%" }}
+                animate={{ y: "0%" }}
+                transition={{
+                  duration: 0.95,
+                  delay: 0.55 + i * 0.11,
+                  ease: [0.22, 1, 0.36, 1],
+                }}
+                className="inline-block"
+                style={{
+                  fontStyle: i === titleWords.length - 1 ? "italic" : "normal",
+                  fontWeight: i === titleWords.length - 1 ? 400 : 600,
+                  color: i === titleWords.length - 1 ? "var(--ink-soft)" : "var(--ink)",
+                }}
+              >
+                {word}
+                {i < titleWords.length - 1 && " "}
+              </motion.span>
+            </span>
+          ))}
+        </h1>
+
+        {/* Rule under title */}
         <div
-          ref={lineRef}
-          className="mx-auto w-12 h-px origin-center"
-          style={{ background: "rgba(255,255,255,0.15)" }}
+          ref={ruleRef}
+          className="mx-auto w-16 h-px origin-left mt-8 mb-8"
+          style={{ background: "var(--accent)" }}
         />
 
-        {/* Main title */}
-        <motion.h1
-          className="text-6xl md:text-8xl font-normal text-white leading-tight flex justify-center flex-wrap tracking-tight"
-          style={{ fontFamily: "var(--font-serif)" }}
-        >
-          {/* Staggered text reveal */}
-          {["The", "Pilot's", "Son"].map((word, i) => (
-            <motion.span
-              key={i}
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1.2, delay: 0.8 + i * 0.15, ease: [0.22, 1, 0.36, 1] }}
-              className="inline-block mr-3 md:mr-5"
-            >
-              {word}
-            </motion.span>
-          ))}
-        </motion.h1>
-
-        {/* Subtitle */}
+        {/* Standfirst / deck */}
         <motion.p
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.9, ease: [0.22, 1, 0.36, 1] }}
-          className="text-lg text-neutral-400 max-w-xl mx-auto leading-relaxed"
+          transition={{ duration: 1, delay: 1.4 }}
+          className="serif text-xl md:text-2xl leading-[1.5] max-w-xl mx-auto"
+          style={{ color: "var(--ink-soft)" }}
         >
-          A scrollytelling journey through the Cold War, Vietnam, and 9/11 —
+          A scrollable oral history of the Cold War, Vietnam, and 9/11 —
           told by the son of a Navy fighter pilot who lived it all.
         </motion.p>
 
-        {/* Subject bio - floating grid */}
+        {/* Byline + subject card — much quieter than before */}
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1.5, delay: 1.5, ease: [0.22, 1, 0.36, 1] }}
-          className="mx-auto max-w-2xl mt-12 pt-8 border-t border-white/5"
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 1.7 }}
+          className="mt-14 mx-auto max-w-2xl text-left grid grid-cols-1 md:grid-cols-[auto_1fr] gap-6 md:gap-10 pt-8"
+          style={{ borderTop: "1px solid var(--rule)" }}
         >
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-left">
-            {bioFields.map((f) => (
-              <div key={f.label}>
-                <p className="text-[10px] font-mono text-neutral-500 uppercase tracking-widest mb-1.5">
-                  {f.label}
-                </p>
-                <p className="text-sm font-medium text-neutral-200">
-                  {f.value}
-                </p>
-              </div>
-            ))}
-          </div>
-          <p className="text-xs text-neutral-500 leading-relaxed text-left mt-6 max-w-xl">
+          <dl className="grid grid-cols-2 gap-x-6 gap-y-3 text-sm">
+            <dt className="kicker">Subject</dt>
+            <dd style={{ color: "var(--ink)" }}>{SUBJECT_BIO.name}</dd>
+            <dt className="kicker">Born</dt>
+            <dd style={{ color: "var(--ink)" }}>{SUBJECT_BIO.dob}</dd>
+            <dt className="kicker">Connection</dt>
+            <dd style={{ color: "var(--ink)" }}>{SUBJECT_BIO.connection}</dd>
+          </dl>
+          <p
+            className="text-[15px] leading-[1.7]"
+            style={{ color: "var(--ink-soft)" }}
+          >
             {SUBJECT_BIO.context}
           </p>
         </motion.div>
@@ -172,31 +145,18 @@ export default function HeroSection() {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 2.2 }}
-          className="flex flex-col items-center gap-2 pt-4"
+          transition={{ delay: 2.4 }}
+          className="flex flex-col items-center gap-3 mt-16"
         >
-          <span className="text-xs font-mono text-neutral-600 tracking-widest uppercase">
-            Scroll to begin
-          </span>
+          <span className="kicker">Begin reading</span>
           <motion.div
-            animate={{ y: [0, 8, 0] }}
-            transition={{
-              duration: 1.5,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-            className="w-4 h-6 rounded-full border border-white/20 flex items-start justify-center pt-1"
-          >
-            <div className="w-0.5 h-1.5 rounded-full bg-white/40" />
-          </motion.div>
+            animate={{ y: [0, 6, 0] }}
+            transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
+            className="w-px h-10"
+            style={{ background: "var(--rule-strong)" }}
+          />
         </motion.div>
-      </motion.div>
-
-      {/* Bottom fade */}
-      <div
-        className="absolute bottom-0 left-0 right-0 h-32 pointer-events-none"
-        style={{ background: "linear-gradient(transparent, #020408)" }}
-      />
+      </div>
     </section>
   );
 }

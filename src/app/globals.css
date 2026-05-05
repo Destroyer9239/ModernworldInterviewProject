@@ -1,132 +1,211 @@
 @import "tailwindcss";
 
+/*
+ * Editorial color system — warm, restrained, magazine-style.
+ * Inspired by long-form journalism (NYT, The Atlantic, ProPublica).
+ */
 :root {
-  --background: #020408;
-  --foreground: #f0f0f0;
+  --bg: #0c0d11;
+  --bg-elevated: #14151a;
+  --ink: #ece7dc;        /* primary text — warm cream/parchment */
+  --ink-soft: #b8b3a8;   /* body copy — warm grey */
+  --ink-mute: #7a766c;   /* meta, captions */
+  --ink-faint: #4a4740;  /* dividers, hints */
+  --rule: rgba(236, 231, 220, 0.10);
+  --rule-strong: rgba(236, 231, 220, 0.18);
+  --accent: #c8704c;     /* warm rust — single editorial accent, used sparingly */
+  --accent-soft: #d4a574;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-background: var(--bg);
+  --color-foreground: var(--ink);
+  --font-sans: var(--font-inter);
+  --font-mono: var(--font-jetbrains);
+  --font-serif: var(--font-cormorant);
 }
 
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
 html {
-  scroll-behavior: smooth;
-  background: var(--background);
+  background: var(--bg);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-geist-sans), 'Helvetica Neue', Arial, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-inter), 'Helvetica Neue', Arial, sans-serif;
+  font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
+  line-height: 1.6;
 }
 
-/* ══════════════════════════════════════
-   CUSTOM SCROLLBAR
-   ══════════════════════════════════════ */
+/* Editorial typography helpers */
+.serif { font-family: var(--font-serif), 'Georgia', serif; }
+.mono  { font-family: var(--font-mono),  ui-monospace, monospace; }
+
+/* Drop cap — used on the opening paragraph of each chapter */
+.dropcap::first-letter {
+  font-family: var(--font-serif), 'Georgia', serif;
+  float: left;
+  font-size: 4.6em;
+  line-height: 0.85;
+  margin: 0.06em 0.08em 0 0;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+/* Editorial kicker — small caps for section labels */
+.kicker {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+}
+
+/* Hide native cursor on desktop only when our custom cursor is active */
+@media (pointer: fine) {
+  body, button, a, input, [role="button"] {
+    cursor: none;
+  }
+}
+
+/* Tighten paragraph rhythm in editorial body */
+.prose-editorial p {
+  color: var(--ink-soft);
+  font-size: 17px;
+  line-height: 1.75;
+  margin-top: 1.1em;
+}
+
+.prose-editorial p:first-child {
+  margin-top: 0;
+}
+
+/* Pull quote */
+.pullquote {
+  font-family: var(--font-serif), 'Georgia', serif;
+  font-weight: 500;
+  line-height: 1.25;
+  font-size: clamp(1.6rem, 3.5vw, 2.6rem);
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+
+/* ── Subtle film grain — barely there ── */
+.film-grain {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  pointer-events: none;
+  opacity: 0.025;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.95' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.7 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  animation: grain 8s steps(10) infinite;
+}
+
+@keyframes grain {
+  0%, 100% { transform: translate(0, 0); }
+  10%      { transform: translate(-5%, -10%); }
+  20%      { transform: translate(-15%, 5%); }
+  30%      { transform: translate(7%, -25%); }
+  40%      { transform: translate(-5%, 25%); }
+  50%      { transform: translate(-15%, 10%); }
+  60%      { transform: translate(15%, 0%); }
+  70%      { transform: translate(0%, 15%); }
+  80%      { transform: translate(3%, 35%); }
+  90%      { transform: translate(-10%, 10%); }
+}
+
+/* No more vignette — feels too "AI cinematic" */
+.vignette { display: none; }
+
+/* ── Scrollbar ── */
 ::-webkit-scrollbar {
-  width: 4px;
+  width: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.03);
+  background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(107, 150, 196, 0.4);
-  border-radius: 2px;
+  background: rgba(236, 231, 220, 0.15);
+  border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(107, 150, 196, 0.7);
+  background: rgba(236, 231, 220, 0.3);
 }
 
+/* ── Selection ── */
 ::selection {
-  background: rgba(107, 150, 196, 0.3);
+  background: rgba(200, 112, 76, 0.35);
   color: #fff;
 }
 
-/* ══════════════════════════════════════
-   FLOATING PARTICLE ANIMATION
-   ══════════════════════════════════════ */
-@keyframes float-particle {
-  0% {
-    transform: translateY(0) translateX(0) scale(1);
-    opacity: 0;
-  }
-  10% {
-    opacity: 1;
-  }
-  50% {
-    transform: translateY(-40vh) translateX(20px) scale(1.5);
-    opacity: 0.6;
-  }
-  90% {
-    opacity: 0.2;
-  }
-  100% {
-    transform: translateY(-80vh) translateX(-10px) scale(0.5);
-    opacity: 0;
-  }
-}
-
-.animate-float-particle {
-  animation: float-particle linear infinite;
-}
-
-/* ══════════════════════════════════════
-   3D SECTION PERSPECTIVE EFFECTS
-   ══════════════════════════════════════ */
-
-/* Ensure 3D transforms are hardware-accelerated */
-section {
-  transform-style: flat;
-  -webkit-transform-style: flat;
-}
-
-/* GPU acceleration for parallax layers */
-.parallax-3d-layer {
-  will-change: transform;
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-}
-
-/* ══════════════════════════════════════
-   FORM CONTROLS
-   ══════════════════════════════════════ */
 input[type="range"] {
   -webkit-appearance: none;
   appearance: none;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 4px;
+  background: rgba(236, 231, 220, 0.12);
+  border-radius: 999px;
   outline: none;
+  height: 3px;
 }
 
 input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 10px;
-  height: 10px;
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
-  background: #6b96c4;
+  background: var(--ink);
   cursor: pointer;
 }
 
 input[type="range"]::-moz-range-thumb {
-  width: 10px;
-  height: 10px;
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
-  background: #6b96c4;
+  background: var(--ink);
   border: none;
   cursor: pointer;
 }
 
+/* ── Lenis ── */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}
+
 canvas {
   display: block;
+}
+
+/* ── Reduce motion ── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }

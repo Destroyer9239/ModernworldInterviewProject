@@ -17,8 +17,6 @@ export interface StorySection {
   quote?: string;
   stats: StatItem[];
   accentColor: string;
-  backgroundImage: string | null;
-  gradientFallback: string;
   jetState: {
     rotationX: number;
     rotationY: number;
@@ -59,9 +57,7 @@ export const STORY_SECTIONS: StorySection[] = [
       { value: '46 yrs', label: 'Duration of the Cold War' },
       { value: '~6', label: 'Age at parents\' divorce' },
     ],
-    accentColor: '#6b96c4',
-    backgroundImage: '/images/cold-war.png',
-    gradientFallback: 'linear-gradient(135deg, #0a1628 0%, #1a2a4a 40%, #0d1b2e 100%)',
+    accentColor: '#5a7d99',
     jetState: {
       rotationX: 0,
       rotationY: 0.3,
@@ -97,13 +93,11 @@ export const STORY_SECTIONS: StorySection[] = [
     quote: '"On the very first day, he came running back, was sent on patrol -- and was in the air."',
     stats: [
       { value: '1st', label: 'Strike of Vietnam War his father flew' },
-      { value: 'Carrier', label: "His father's deployment to Vietnam" },
-      { value: 'None', label: 'Recognition from the public back home' },
+      { value: 'Aircraft', label: 'Carrier his father deployed from' },
+      { value: '0', label: '"Thank you for service" -- never said' },
       { value: '58,000', label: 'American lives lost in Vietnam' },
     ],
-    accentColor: '#b5604a',
-    backgroundImage: '/images/vietnam.png',
-    gradientFallback: 'linear-gradient(135deg, #1a2e0a 0%, #3d2b0a 40%, #1a0d0a 100%)',
+    accentColor: '#a04539',
     jetState: {
       rotationX: 0.1,
       rotationY: -0.5,
@@ -142,9 +136,7 @@ export const STORY_SECTIONS: StorySection[] = [
       { value: 'Duck/Cover', label: 'School drill -- and they knew it was useless' },
       { value: '1980s', label: 'Reagan rebuilds American confidence' },
     ],
-    accentColor: '#9278b2',
-    backgroundImage: '/images/late-cold-war.png',
-    gradientFallback: 'linear-gradient(135deg, #1a0d2e 0%, #2d1b4e 40%, #0d0a1a 100%)',
+    accentColor: '#6a5a89',
     jetState: {
       rotationX: -0.1,
       rotationY: 0.8,
@@ -184,9 +176,7 @@ export const STORY_SECTIONS: StorySection[] = [
       { value: 'Considered', label: 'Steve thought about enlisting' },
       { value: 'SNL', label: 'How he measured presidential weakness' },
     ],
-    accentColor: '#3e9b8c',
-    backgroundImage: '/images/presidents.png',
-    gradientFallback: 'linear-gradient(135deg, #0a1a1a 0%, #1a2e2a 40%, #0d1a1a 100%)',
+    accentColor: '#5a8674',
     jetState: {
       rotationX: 0.08,
       rotationY: 0.6,
@@ -226,9 +216,7 @@ export const STORY_SECTIONS: StorySection[] = [
       { value: '100 hrs', label: 'Ground combat in Desert Storm' },
       { value: 'Bankrupt', label: 'What the Cold War did to the Soviet economy' },
     ],
-    accentColor: '#4d9870',
-    backgroundImage: '/images/post-cold-war.png',
-    gradientFallback: 'linear-gradient(135deg, #0d1a12 0%, #1a2e20 40%, #0a140d 100%)',
+    accentColor: '#6e7a45',
     jetState: {
       rotationX: 0.05,
       rotationY: 1.2,
@@ -249,28 +237,26 @@ export const STORY_SECTIONS: StorySection[] = [
     shortTitle: '9/11',
     interviewQuestion: 'Where were you on 9/11? What was the city like before the planes hit -- and how did it impact you and those around you?',
     historicalFact:
-      'On September 11, 2001, 19 hijackers carried out coordinated attacks on the World Trade Center and Pentagon. The FAA grounded all civilian aircraft for the first time in history -- 4,500 flights were ordered to land immediately. The skies were silent for five days.',
+      'On September 11, 2001, 19 hijackers carried out coordinated attacks on the World Trade Center and Pentagon. The FAA grounded all civilian aircraft for the first time in American history -- roughly 4,500 flights were ordered to land immediately. Civilian airspace was closed from September 11 to September 13, approximately two days.',
     context:
       'September 11, 2001 permanently transformed national security, global warfare, and the American soul. For Steve Simpson, it was also deeply personal. He had missed the attack by exactly one month -- and watched the second tower collapse live on television from a hotel room in Los Angeles.',
     findings: [
       'Steve had lived in New York City for years. In August 2001, he moved to San Diego for a computer project -- one month before the attacks.',
       '"By a month\'s difference, I would\'ve been living in New York." His daily office was two blocks from the World Trade Center.',
       '"I remember being in LA and going, Oh my God, watching that second tower come down live on TV."',
-      'One of the hijacked planes was targeting Los Angeles -- where Steve now was.',
-      'For five days, not a single aircraft flew over the United States. The nation was completely frozen.',
-      'When the first plane finally reappeared in the sky days later, it stopped freeway traffic. People pulled over and stared up in fear.',
+      'Two of the four hijacked planes -- American Airlines Flight 11 and United Airlines Flight 175 -- were originally scheduled to fly to Los Angeles, the city where Steve now watched events unfold.',
+      'For approximately two days, not a single civilian aircraft flew over the United States. The FAA lifted the ground stop on September 13, 2001.',
+      'When the first plane finally reappeared in the sky, it stopped freeway traffic. People pulled over and stared up in fear.',
       'Being the son of a military pilot shaped his reaction: the country immediately wanted to "punch back" -- a rush to action Steve reflects on with complexity.',
     ],
     quote: '"I remember living for days with no air traffic and fear -- and then I remember the first plane back in the sky."',
     stats: [
       { value: '1 month', label: 'Before 9/11 Steve left NYC' },
       { value: '2 blocks', label: 'His office from the World Trade Center' },
-      { value: '5 days', label: 'No aircraft in U.S. skies after the attack' },
-      { value: '4,500', label: 'Flights grounded on 9/11' },
+      { value: '~2 days', label: 'FAA civilian air travel shut down (Sept 11–13)' },
+      { value: '~4,500', label: 'Flights grounded on 9/11' },
     ],
-    accentColor: '#c47630',
-    backgroundImage: null,
-    gradientFallback: 'linear-gradient(135deg, #1a1005 0%, #2e1f0a 30%, #0d0805 70%, #1a1208 100%)',
+    accentColor: '#b5703f',
     jetState: {
       rotationX: -0.2,
       rotationY: -1.0,
@@ -310,9 +296,7 @@ export const STORY_SECTIONS: StorySection[] = [
       { value: '2 sides', label: 'A complete understanding on both sides' },
       { value: 'Now', label: 'The rift finally healed' },
     ],
-    accentColor: '#c2a248',
-    backgroundImage: null,
-    gradientFallback: 'linear-gradient(135deg, #1a1505 0%, #2e2510 30%, #1a1208 70%, #0d0a05 100%)',
+    accentColor: '#b5a04a',
     jetState: {
       rotationX: 0,
       rotationY: 0,

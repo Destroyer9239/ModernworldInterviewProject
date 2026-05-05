@@ -1,105 +1,85 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { motion } from "framer-motion";
+import { useEffect, useState, useRef } from "react";
 
 export default function CustomCursor() {
-  const dotRef = useRef<HTMLDivElement>(null);
+  const [enabled, setEnabled] = useState(false);
+  const [hovering, setHovering] = useState(false);
   const ringRef = useRef<HTMLDivElement>(null);
-  const [isHovering, setIsHovering] = useState(false);
-  const [isMouseDown, setIsMouseDown] = useState(false);
-  const [showCursor, setShowCursor] = useState(false);
+  const dotRef = useRef<HTMLDivElement>(null);
+  const target = useRef({ x: 0, y: 0 });
+  const ringPos = useRef({ x: 0, y: 0 });
+  const raf = useRef<number | null>(null);
 
   useEffect(() => {
-    setShowCursor(!window.matchMedia("(pointer: coarse)").matches);
-  }, []);
+    // Only enable on devices with fine pointer
+    if (!window.matchMedia("(pointer: fine)").matches) return;
+    setEnabled(true);
 
-  useEffect(() => {
-    if (!showCursor) return;
-    const dot = dotRef.current;
-    const ring = ringRef.current;
-    if (!dot || !ring) return;
-
-    const mouse = { x: -100, y: -100 };
-    const ringPos = { x: -100, y: -100 };
-
-    const handleMouseMove = (e: MouseEvent) => {
-      mouse.x = e.clientX;
-      mouse.y = e.clientY;
-      dot.style.transform = `translate3d(${mouse.x}px, ${mouse.y}px, 0)`;
+    const onMove = (e: MouseEvent) => {
+      target.current.x = e.clientX;
+      target.current.y = e.clientY;
+      if (dotRef.current) {
+        dotRef.current.style.transform = `translate3d(${e.clientX - 3}px, ${e.clientY - 3}px, 0)`;
+      }
     };
 
-    const handleMouseOver = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      const needsHover = !!(
-        target.tagName.toLowerCase() === "button" ||
-        target.tagName.toLowerCase() === "a" ||
-        target.closest("button") ||
-        target.closest("a") ||
-        target.closest("input[type='range']")
-      );
-      setIsHovering(needsHover);
+    const onOver = (e: MouseEvent) => {
+      const t = e.target as HTMLElement;
+      if (t.closest("button, a, input[type=range], [role=button]")) {
+        setHovering(true);
+      } else {
+        setHovering(false);
+      }
     };
 
-    const handleMouseDown = () => setIsMouseDown(true);
-    const handleMouseUp = () => setIsMouseDown(false);
-
-    window.addEventListener("mousemove", handleMouseMove, { passive: true });
-    window.addEventListener("mouseover", handleMouseOver);
-    window.addEventListener("mousedown", handleMouseDown);
-    window.addEventListener("mouseup", handleMouseUp);
-
-    let rafId: number;
     const tick = () => {
-      ringPos.x += (mouse.x - ringPos.x) * 0.15;
-      ringPos.y += (mouse.y - ringPos.y) * 0.15;
-      ring.style.transform = `translate3d(${ringPos.x}px, ${ringPos.y}px, 0)`;
-      rafId = requestAnimationFrame(tick);
+      ringPos.current.x += (target.current.x - ringPos.current.x) * 0.18;
+      ringPos.current.y += (target.current.y - ringPos.current.y) * 0.18;
+      if (ringRef.current) {
+        const size = hovering ? 44 : 28;
+        ringRef.current.style.transform = `translate3d(${ringPos.current.x - size / 2}px, ${ringPos.current.y - size / 2}px, 0)`;
+        ringRef.current.style.width = `${size}px`;
+        ringRef.current.style.height = `${size}px`;
+      }
+      raf.current = requestAnimationFrame(tick);
     };
-    tick();
+
+    window.addEventListener("mousemove", onMove);
+    window.addEventListener("mouseover", onOver);
+    raf.current = requestAnimationFrame(tick);
 
     return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("mouseover", handleMouseOver);
-      window.removeEventListener("mousedown", handleMouseDown);
-      window.removeEventListener("mouseup", handleMouseUp);
-      cancelAnimationFrame(rafId);
+      window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("mouseover", onOver);
+      if (raf.current) cancelAnimationFrame(raf.current);
     };
-  }, [showCursor]);
+  }, [hovering]);
 
-  if (!showCursor) return null;
+  if (!enabled) return null;
 
   return (
     <>
       <div
-        ref={dotRef}
-        className="fixed top-0 left-0 w-1.5 h-1.5 bg-white rounded-full pointer-events-none z-[10000] mix-blend-difference"
+        ref={ringRef}
+        className="fixed top-0 left-0 pointer-events-none z-[150] rounded-full transition-[width,height,background,border-color] duration-200"
         style={{
-          transform: "translate3d(-100px, -100px, 0)",
-          marginLeft: "-0.75px",
-          marginTop: "-0.75px",
+          border: hovering
+            ? "1.5px solid rgba(74, 144, 217, 0.9)"
+            : "1px solid rgba(255, 255, 255, 0.4)",
+          background: hovering ? "rgba(74, 144, 217, 0.08)" : "transparent",
+          mixBlendMode: "difference",
         }}
       />
-      <motion.div
-        ref={ringRef}
-        className="fixed top-0 left-0 w-8 h-8 border rounded-full pointer-events-none z-[9999]"
+      <div
+        ref={dotRef}
+        className="fixed top-0 left-0 pointer-events-none z-[151] rounded-full"
         style={{
-          transform: "translate3d(-100px, -100px, 0)",
-          marginLeft: "-16px",
-          marginTop: "-16px",
-          borderColor: "rgba(107, 150, 196, 0.5)",
-          boxShadow: "0 0 12px rgba(107, 150, 196, 0.15)",
+          width: 6,
+          height: 6,
+          background: "rgba(255, 255, 255, 0.95)",
+          mixBlendMode: "difference",
         }}
-        animate={{
-          scale: isMouseDown ? 0.8 : isHovering ? 1.5 : 1,
-          borderColor: isHovering
-            ? "rgba(107, 150, 196, 0.85)"
-            : "rgba(107, 150, 196, 0.5)",
-          backgroundColor: isHovering
-            ? "rgba(107, 150, 196, 0.06)"
-            : "transparent",
-        }}
-        transition={{ duration: 0.18 }}
       />
     </>
   );

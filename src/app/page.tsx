@@ -4,11 +4,15 @@ import { useState, useCallback, useEffect } from "react";
 import dynamic from "next/dynamic";
 import { STORY_SECTIONS } from "@/data/sections";
 import HeroSection from "@/components/HeroSection";
-import ParallaxSection from "@/components/ParallaxSection";
+import ChapterIndex from "@/components/ChapterIndex";
+import ScrollySection from "@/components/ScrollySection";
 import EpilogueSection from "@/components/EpilogueSection";
+import Footer from "@/components/Footer";
 import Header from "@/components/Header";
-import TimelineBar from "@/components/TimelineBar";
 import AudioPlayer from "@/components/AudioPlayer";
+import LoadingScreen from "@/components/LoadingScreen";
+import SmoothScroll from "@/components/SmoothScroll";
+import CustomCursor from "@/components/CustomCursor";
 import { useScrollProgress } from "@/hooks/useScrollProgress";
 
 const JetScene = dynamic(() => import("@/components/JetScene"), { ssr: false });
@@ -18,11 +22,9 @@ export default function Home() {
   const [hasModel, setHasModel] = useState(false);
   const { activeSection, scrollProgress } = useScrollProgress(STORY_SECTIONS.length);
 
-  const [prevActiveSection, setPrevActiveSection] = useState(activeSection);
-  if (activeSection !== prevActiveSection) {
-    setPrevActiveSection(activeSection);
+  useEffect(() => {
     setActiveSectionIndex(activeSection);
-  }
+  }, [activeSection]);
 
   useEffect(() => {
     fetch("/models/jet.glb", { method: "HEAD" })
@@ -37,48 +39,57 @@ export default function Home() {
   const currentSection = STORY_SECTIONS[activeSectionIndex] ?? STORY_SECTIONS[0];
 
   return (
-    <main className="relative bg-[#020408] text-white min-h-screen">
-      {/* ── Sticky header with full section nav ── */}
-      <Header activeSection={activeSectionIndex} scrollProgress={scrollProgress} />
+    <SmoothScroll>
+      <main className="relative min-h-screen" style={{ background: "var(--bg)", color: "var(--ink)" }}>
+        {/* Loading screen — covers everything until ready */}
+        <LoadingScreen />
 
-      {/* ── Audio player (bottom-right) ── */}
-      <AudioPlayer />
+        {/* Custom cursor (desktop only) */}
+        <CustomCursor />
 
-      {/* ── Timeline sidebar (right) ── */}
-      <TimelineBar activeSection={activeSectionIndex} scrollProgress={scrollProgress} />
+        {/* Sticky header with section nav */}
+        <Header activeSection={activeSectionIndex} scrollProgress={scrollProgress} />
 
-      {/* ── Ambient 3D canvas — fixed background layer ── */}
-      <div
-        className="fixed inset-0 pointer-events-none"
-        style={{ zIndex: 0, opacity: 0.35 }}
-      >
-        <JetScene
-          animState={currentSection.jetState}
-          accentColor={currentSection.accentColor}
-          hasModel={hasModel}
-        />
-      </div>
+        {/* Audio player */}
+        <AudioPlayer />
 
-      {/* ── All scrollable content sits above the canvas ── */}
-      <div className="relative" style={{ zIndex: 10 }}>
-        {/* Hero */}
-        <HeroSection />
-
-        {/* Story sections with parallax backgrounds */}
-        {STORY_SECTIONS.map((section, i) => (
-          <ParallaxSection
-            key={section.id}
-            section={section}
-            isActive={activeSectionIndex === i}
-            onBecomeActive={handleSectionActive}
-            index={i}
+        {/* Ambient 3D canvas — fixed background layer */}
+        <div
+          className="fixed inset-0 pointer-events-none"
+          style={{ zIndex: 0, opacity: 0.18 }}
+        >
+          <JetScene
+            animState={currentSection.jetState}
+            accentColor={currentSection.accentColor}
+            hasModel={hasModel}
           />
-        ))}
+        </div>
 
-        {/* Epilogue */}
-        <EpilogueSection />
-      </div>
-    </main>
+        {/* All scrollable content */}
+        <div className="relative" style={{ zIndex: 10 }}>
+          {/* Hero with starfield + bio */}
+          <HeroSection />
+
+          {/* Chapter index / table of contents */}
+          <ChapterIndex />
+
+          {/* Story sections */}
+          {STORY_SECTIONS.map((section, i) => (
+            <ScrollySection
+              key={section.id}
+              section={section}
+              isActive={activeSectionIndex === i}
+              onBecomeActive={() => handleSectionActive(i)}
+            />
+          ))}
+
+          {/* Epilogue */}
+          <EpilogueSection />
+
+          {/* Footer */}
+          <Footer />
+        </div>
+      </main>
+    </SmoothScroll>
   );
 }
-

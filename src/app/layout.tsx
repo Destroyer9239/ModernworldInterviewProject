@@ -1,21 +1,25 @@
 import type { Metadata } from "next";
-import { Inter, Playfair_Display, JetBrains_Mono } from "next/font/google";
-import CustomCursor from "@/components/CustomCursor";
+import { Inter, JetBrains_Mono, Cormorant_Garamond } from "next/font/google";
 import "./globals.css";
 
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
+  display: "swap",
 });
 
-const playfair = Playfair_Display({
-  variable: "--font-playfair",
+const jetbrains = JetBrains_Mono({
+  variable: "--font-jetbrains",
   subsets: ["latin"],
+  display: "swap",
 });
 
-const jbMono = JetBrains_Mono({
-  variable: "--font-mono",
+const cormorant = Cormorant_Garamond({
+  variable: "--font-cormorant",
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  style: ["normal", "italic"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -37,10 +41,11 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${playfair.variable} ${jbMono.variable} antialiased`}
+      className={`${inter.variable} ${jetbrains.variable} ${cormorant.variable} antialiased`}
     >
-      <body className="bg-[#020408] overflow-x-hidden">
-        <CustomCursor />
+      <body className="overflow-x-hidden" style={{ background: "var(--bg)" }}>
+        {/* Subtle film grain — barely visible, adds editorial texture */}
+        <div className="film-grain" aria-hidden />
         {children}
       </body>
     </html>
