@@ -13,7 +13,14 @@ export default function ChapterIndex() {
   };
 
   return (
-    <section ref={ref} className="relative py-28 md:py-36 px-6 md:px-16">
+    <section ref={ref} className="relative py-28 md:py-36 px-6 md:px-16 overflow-hidden">
+      {/* Background decoration */}
+      <div className="absolute inset-0 pointer-events-none opacity-[0.03]">
+        <div 
+          className="absolute top-0 right-0 w-1/2 h-full"
+          style={{ background: "radial-gradient(circle at 100% 0%, var(--accent) 0%, transparent 70%)" }}
+        />
+      </div>
       <div className="relative max-w-5xl mx-auto">
         {/* Header */}
         <motion.div
@@ -41,7 +48,7 @@ export default function ChapterIndex() {
             className="serif italic text-base md:text-lg leading-[1.6] max-w-md md:justify-self-end md:text-right"
             style={{ color: "var(--ink-soft)" }}
           >
-            A son of a Navy fighter pilot tells the story of the Cold War, Vietnam,
+            A son of a Navy carrier pilot tells the story of the Cold War, Vietnam,
             and 9/11 — from the inside.
           </p>
         </motion.div>

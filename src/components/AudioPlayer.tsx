@@ -12,9 +12,11 @@ export default function AudioPlayer() {
   const [volume, setVolume] = useState(0.7);
   const [hasAudio, setHasAudio] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    fetch("/audio/interview.mp3", { method: "HEAD" })
+    fetch("/Audio/interview.mp3", { method: "HEAD" })
       .then((r) => setHasAudio(r.ok))
       .catch(() => setHasAudio(false));
   }, []);
@@ -29,7 +31,13 @@ export default function AudioPlayer() {
         setCurrentTime(audio.currentTime);
       }
     };
-    const onLoaded = () => setDuration(audio.duration);
+    const onLoaded = () => {
+      setDuration(audio.duration);
+      setIsLoaded(true);
+      setIsLoading(false);
+    };
+    const onWaiting = () => setIsLoading(true);
+    const onPlaying = () => setIsLoading(false);
     const onEnded = () => {
       setIsPlaying(false);
       setProgress(0);
@@ -37,10 +45,14 @@ export default function AudioPlayer() {
     };
     audio.addEventListener("timeupdate", onTimeUpdate);
     audio.addEventListener("loadedmetadata", onLoaded);
+    audio.addEventListener("waiting", onWaiting);
+    audio.addEventListener("playing", onPlaying);
     audio.addEventListener("ended", onEnded);
     return () => {
       audio.removeEventListener("timeupdate", onTimeUpdate);
       audio.removeEventListener("loadedmetadata", onLoaded);
+      audio.removeEventListener("waiting", onWaiting);
+      audio.removeEventListener("playing", onPlaying);
       audio.removeEventListener("ended", onEnded);
     };
   }, [volume]);
@@ -52,8 +64,13 @@ export default function AudioPlayer() {
       audio.pause();
       setIsPlaying(false);
     } else {
-      audio.play().catch(() => {});
-      setIsPlaying(true);
+      setIsLoading(true);
+      audio.play().then(() => {
+        setIsPlaying(true);
+        setIsLoading(false);
+      }).catch(() => {
+        setIsLoading(false);
+      });
     }
   };
 
@@ -82,7 +99,7 @@ export default function AudioPlayer() {
 
   return (
     <>
-      {hasAudio && <audio ref={audioRef} src="/audio/interview.mp3" preload="metadata" />}
+      {hasAudio && <audio ref={audioRef} src="/Audio/interview.mp3" preload="metadata" />}
 
       <div className="fixed bottom-6 right-6 z-50">
         <AnimatePresence>
@@ -120,7 +137,7 @@ export default function AudioPlayer() {
                   className="serif italic"
                   style={{ color: "var(--ink-soft)", fontSize: "14px" }}
                 >
-                  {hasAudio ? "Steve Simpson · in his own voice" : "No audio file found"}
+                  {hasAudio ? "Stephen Vance · in his own voice" : "No audio file found"}
                 </p>
 
                 {/* Progress */}
@@ -163,7 +180,21 @@ export default function AudioPlayer() {
                     }}
                     aria-label={isPlaying ? "Pause" : "Play"}
                   >
-                    {isPlaying ? (
+                    {isLoading ? (
+                      <motion.svg
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                        width="14"
+                        height="14"
+                        viewBox="0 0 14 14"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                      >
+                        <circle cx="7" cy="7" r="6" strokeOpacity="0.2" />
+                        <path d="M7 1a6 6 0 0 1 6 6" />
+                      </motion.svg>
+                    ) : isPlaying ? (
                       <svg width="11" height="11" viewBox="0 0 11 11" fill="currentColor">
                         <rect x="1.5" y="1" width="2.8" height="9" rx="0.5" />
                         <rect x="6.7" y="1" width="2.8" height="9" rx="0.5" />
@@ -245,7 +276,7 @@ export default function AudioPlayer() {
             )}
           </span>
           <span className="kicker" style={{ color: "var(--ink)" }}>
-            {hasAudio ? (isPlaying ? "Now Playing" : "Listen") : "Audio"}
+            {hasAudio ? (isLoading ? "Loading..." : isPlaying ? "Now Playing" : "Listen") : "Audio"}
           </span>
           {isPlaying && (
             <span className="flex gap-[2px] items-end h-3">

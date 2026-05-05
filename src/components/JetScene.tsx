@@ -244,6 +244,100 @@ interface JetSceneProps {
   hasModel: boolean;
 }
 
+function SkyBackground({ color }: { color: string }) {
+  const meshRef = useRef<THREE.Mesh>(null);
+  const targetColor = useMemo(() => new THREE.Color(color), [color]);
+  const currentColor = useRef(new THREE.Color("#f7f3ee"));
+
+  useEffect(() => {
+    gsap.to(currentColor.current, {
+      r: targetColor.r,
+      g: targetColor.g,
+      b: targetColor.b,
+      duration: 2.5,
+      ease: "power2.inOut",
+    });
+  }, [targetColor]);
+
+  useFrame(() => {
+    if (meshRef.current) {
+      (meshRef.current.material as THREE.ShaderMaterial).uniforms.uColor.value.copy(currentColor.current);
+    }
+  });
+
+  const shaderArgs = useMemo(() => ({
+    uniforms: {
+      uColor: { value: new THREE.Color("#f7f3ee") },
+      uBg: { value: new THREE.Color("#f7f3ee") },
+    },
+    vertexShader: `
+      varying vec2 vUv;
+      void main() {
+        vUv = uv;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      }
+    `,
+    fragmentShader: `
+      uniform vec3 uColor;
+      uniform vec3 uBg;
+      varying vec2 vUv;
+      void main() {
+        float grad = 1.0 - vUv.y;
+        vec3 finalColor = mix(uBg, uColor, grad * 0.15);
+        gl_FragColor = vec4(finalColor, 1.0);
+      }
+    `
+  }), []);
+
+  return (
+    <mesh ref={meshRef} position={[0, 0, -10]} scale={[50, 50, 1]}>
+      <planeGeometry />
+      <shaderMaterial args={[shaderArgs]} />
+    </mesh>
+  );
+}
+
+function Particles({ count = 150, color }: { count?: number; color: string }) {
+  const meshRef = useRef<THREE.Points>(null);
+  const points = useMemo(() => {
+    const p = new Float32Array(count * 3);
+    for (let i = 0; i < count; i++) {
+      p[i * 3] = (Math.random() - 0.5) * 20;
+      p[i * 3 + 1] = (Math.random() - 0.5) * 20;
+      p[i * 3 + 2] = (Math.random() - 0.5) * 10 - 5;
+    }
+    return p;
+  }, [count]);
+
+  useFrame((state) => {
+    if (!meshRef.current) return;
+    const t = state.clock.getElapsedTime();
+    meshRef.current.rotation.y = t * 0.05;
+    meshRef.current.rotation.x = t * 0.02;
+  });
+
+  return (
+    <points ref={meshRef}>
+      <bufferGeometry>
+        <bufferAttribute
+          attach="attributes-position"
+          count={points.length / 3}
+          array={points}
+          itemSize={3}
+        />
+      </bufferGeometry>
+      <pointsMaterial
+        size={0.05}
+        color={color}
+        transparent
+        opacity={0.4}
+        sizeAttenuation
+        blending={THREE.AdditiveBlending}
+      />
+    </points>
+  );
+}
+
 export default function JetScene({ animState, accentColor, hasModel }: JetSceneProps) {
   return (
     <Canvas
@@ -256,12 +350,14 @@ export default function JetScene({ animState, accentColor, hasModel }: JetSceneP
       <CameraRig cameraZ={animState.cameraZ} fov={animState.cameraFov} />
       <MouseParallax />
 
-      <ambientLight intensity={0.6} />
-      <directionalLight position={[5, 8, 5]} intensity={1.8} color="#ffffff" castShadow />
-      <directionalLight position={[-5, -2, -3]} intensity={0.4} color={accentColor} />
-      <pointLight position={[0, 4, 2]} intensity={0.8} color={accentColor} />
+      <ambientLight intensity={0.4} />
+      <directionalLight position={[5, 8, 5]} intensity={1.5} color="#ffffff" castShadow />
+      <directionalLight position={[-5, -2, -3]} intensity={0.5} color={accentColor} />
+      <pointLight position={[0, 4, 2]} intensity={0.6} color={accentColor} />
 
       <Suspense fallback={null}>
+        <SkyBackground color={accentColor} />
+        <Particles color={accentColor} />
         {hasModel ? (
           <GLTFJet animState={animState} accentColor={accentColor} />
         ) : (
@@ -269,9 +365,9 @@ export default function JetScene({ animState, accentColor, hasModel }: JetSceneP
         )}
         <Environment preset="night" />
         <EffectComposer>
-          <Bloom luminanceThreshold={0.15} mipmapBlur intensity={1.3} />
-          <Noise opacity={0.03} />
-          <Vignette eskil={false} offset={0.05} darkness={1.2} />
+          <Bloom luminanceThreshold={0.2} mipmapBlur intensity={1.0} />
+          <Noise opacity={0.02} />
+          <Vignette eskil={false} offset={0.1} darkness={1.1} />
         </EffectComposer>
       </Suspense>
     </Canvas>

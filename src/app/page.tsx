@@ -56,7 +56,7 @@ export default function Home() {
         {/* Ambient 3D canvas — fixed background layer */}
         <div
           className="fixed inset-0 pointer-events-none"
-          style={{ zIndex: 0, opacity: 0.10 }}
+          style={{ zIndex: 0, opacity: 0.18 }}
         >
           <JetScene
             animState={currentSection.jetState}

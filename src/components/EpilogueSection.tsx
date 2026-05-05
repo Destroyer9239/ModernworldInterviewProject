@@ -5,22 +5,22 @@ import { motion, useInView } from "framer-motion";
 
 const REFLECTION_POINTS = [
   "Growing up in the modern day isn't just about reading books — it's learning through people who experienced sacrifice and had to adapt in times of war.",
-  "Steve grew up as the son of a Navy fighter pilot during the Vietnam and Cold War eras. His childhood was heavily shaped by the military culture his father brought home.",
-  "There was a long period where the public deeply distrusted the military because of Vietnam — what Steve called a quiet war between soldiers and the society they served.",
+  "Stephen grew up as the son of a Navy carrier pilot during the Vietnam and Cold War eras. His childhood was heavily shaped by the military culture his father brought home.",
+  "There was a long period where the public deeply distrusted the military because of Vietnam — what Stephen called a quiet war between soldiers and the society they served.",
   "The biggest strategic takeaway: the U.S. thought itself invincible after bankrupting Russia — then was struck by an unprecedented attack on the heart of the nation.",
-  "And finally: Steve's man-to-man talk with his father about war, killing, and everything that couldn't be said when Steve was still a child. That conversation changed everything.",
+  "And finally: Stephen's man-to-man talk with his father about war, killing, and everything that couldn't be said when he was still a child. That conversation changed everything.",
 ];
 
 const TIMELINE = [
   { year: "1945", event: "Cold War begins" },
   { year: "1960s", event: "Vietnam War escalates" },
-  { year: "1967", event: "Steve Simpson is born", emphasis: true },
+  { year: "1967", event: "Stephen Vance is born", emphasis: true },
   { year: "1970s", event: "Military–civilian rift deepens" },
   { year: "1980s", event: "Reagan rebuilds confidence; NORAD years" },
   { year: "1991", event: "Cold War ends; Desert Storm" },
-  { year: "1997", event: "Steve visits Moscow" },
-  { year: "Aug 2001", event: "Steve moves from NYC to San Diego" },
-  { year: "Sep 11, 2001", event: "9/11 attacks; Steve's office, two blocks away", emphasis: true },
+  { year: "1997", event: "Stephen visits Moscow" },
+  { year: "Aug 2001", event: "Stephen moves from NYC to San Diego" },
+  { year: "Sep 11, 2001", event: "9/11 attacks; Stephen's office, two blocks away", emphasis: true },
   { year: "Today", event: "The man-to-man talk that finally bridged it" },
 ];
 
@@ -74,7 +74,7 @@ export default function EpilogueSection() {
             className="serif italic max-w-xl mx-auto"
             style={{ color: "var(--ink-soft)", fontSize: "18px", lineHeight: 1.6 }}
           >
-            Steve Simpson&apos;s story spans the entire arc of the Cold War — from a childhood
+            Stephen Vance&apos;s story spans the entire arc of the Cold War — from a childhood
             of silent anxiety to a man-to-man reckoning with what it truly means to serve.
           </motion.p>
         </div>

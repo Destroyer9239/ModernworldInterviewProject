@@ -201,6 +201,26 @@ canvas {
   display: block;
 }
 
+/* Glassmorphism */
+.glass {
+  background: rgba(247, 243, 238, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(26, 23, 20, 0.08);
+}
+
+.glass-dark {
+  background: rgba(26, 23, 20, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(247, 243, 238, 0.1);
+  color: var(--bg);
+}
+
+.premium-shadow {
+  box-shadow: 0 12px 48px -12px rgba(26, 23, 20, 0.12);
+}
+
 /* Reduce motion */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

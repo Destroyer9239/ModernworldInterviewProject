@@ -61,7 +61,7 @@ export default function Header({ activeSection, scrollProgress }: HeaderProps) {
                 fontWeight: 500,
               }}
             >
-              The Pilot&apos;s Son
+              Carrier <span className="italic" style={{ color: "var(--ink-soft)" }}>Born</span>
             </span>
             <span className="hidden md:block kicker" style={{ color: "var(--ink-mute)" }}>
               An Oral History

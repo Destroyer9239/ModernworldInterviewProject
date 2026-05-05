@@ -55,7 +55,7 @@ export default function LoadingScreen() {
                 color: "var(--ink)",
               }}
             >
-              The Pilot&apos;s <span className="italic" style={{ color: "var(--ink-soft)" }}>Son</span>
+              Carrier <span className="italic" style={{ color: "var(--ink-soft)" }}>Born</span>
             </motion.h1>
 
             <motion.div
@@ -97,7 +97,7 @@ export default function LoadingScreen() {
             className="absolute bottom-6 left-6 kicker"
             style={{ color: "var(--ink-mute)" }}
           >
-            Interview · Steve Simpson
+            Interview · Stephen Vance
           </motion.p>
           <motion.p
             initial={{ opacity: 0 }}

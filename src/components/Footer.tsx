@@ -55,7 +55,7 @@ export default function Footer() {
                 maxWidth: "32rem",
               }}
             >
-              An oral history documenting Steve Simpson&apos;s firsthand account of the Cold War,
+              An oral history documenting Stephen Vance&apos;s firsthand account of the Cold War,
               Vietnam, and 9/11. Presented as a long-form, scrollable feature — a tribute to the
               people who lived through modern history and the kids they raised in its shadow.
             </p>
@@ -114,10 +114,10 @@ export default function Footer() {
           style={{ borderTop: "1px solid var(--rule)" }}
         >
           <p className="kicker" style={{ color: "var(--ink-mute)" }}>
-            Memories of the Modern World · Interview with Steve Simpson
+            Memories of the Modern World · Interview with Stephen Vance
           </p>
           <p className="kicker tabular-nums" style={{ color: "var(--ink-mute)" }}>
-            © {new Date().getFullYear()} The Pilot&apos;s Son
+            © {new Date().getFullYear()} Carrier Born
           </p>
         </div>
       </div>

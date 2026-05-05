@@ -7,7 +7,7 @@ import { SUBJECT_BIO } from "@/data/sections";
 
 export default function HeroSection() {
   const ruleRef = useRef<HTMLDivElement>(null);
-  const titleWords = ["The", "Pilot's", "Son"];
+  const titleWords = ["Carrier", "Born"];
 
   useEffect(() => {
     if (ruleRef.current) {
@@ -24,15 +24,24 @@ export default function HeroSection() {
       id="hero"
       className="relative flex flex-col items-center justify-center min-h-screen text-center px-6 pt-24 pb-20 overflow-hidden"
     >
-      {/* Soft warm halo behind the title — replaces the starfield */}
-      <div
-        aria-hidden
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background:
-            "radial-gradient(ellipse 70% 50% at 50% 38%, rgba(200,112,76,0.08) 0%, transparent 65%)",
-        }}
-      />
+      {/* Cinematic Background */}
+      <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+        <motion.img
+          initial={{ scale: 1.1, opacity: 0 }}
+          animate={{ scale: 1, opacity: 0.12 }}
+          transition={{ duration: 2.5, ease: "easeOut" }}
+          src="/images/hero.png"
+          alt=""
+          className="w-full h-full object-cover grayscale brightness-50"
+        />
+        <div 
+          className="absolute inset-0"
+          style={{
+            background:
+              "radial-gradient(ellipse 70% 50% at 50% 38%, rgba(200,112,76,0.08) 0%, transparent 65%)",
+          }}
+        />
+      </div>
 
       <div className="relative z-10 w-full max-w-3xl">
         {/* Issue / dateline ribbon */}
@@ -114,7 +123,7 @@ export default function HeroSection() {
           style={{ color: "var(--ink-soft)" }}
         >
           A scrollable oral history of the Cold War, Vietnam, and 9/11 —
-          told by the son of a Navy fighter pilot who lived it all.
+          told by the son of a Navy carrier pilot who lived it all.
         </motion.p>
 
         {/* Byline + subject card — much quieter than before */}

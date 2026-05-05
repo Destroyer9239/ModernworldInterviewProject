@@ -23,11 +23,11 @@ const cormorant = Cormorant_Garamond({
 });
 
 export const metadata: Metadata = {
-  title: "The Pilot's Son | Memories of the Modern World",
+  title: "Carrier Born | Memories of the Modern World",
   description:
-    "A 3D scrollytelling experience tracing the Cold War through the eyes of Steve Simpson, son of a Navy fighter pilot — from Vietnam to 9/11.",
+    "A 3D scrollytelling experience tracing the Cold War through the eyes of Stephen Vance, son of a Navy carrier pilot — from Vietnam to 9/11.",
   openGraph: {
-    title: "The Pilot's Son | Memories of the Modern World",
+    title: "Carrier Born | Memories of the Modern World",
     description: "A scrollytelling journey through the Cold War, Vietnam, and 9/11.",
     type: "website",
   },
